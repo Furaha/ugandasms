@@ -1,9 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  title: MyString
-  question_id: 1
+option_one:
+  title: Rice and Beans
+  question: question_one
 
-two:
-  title: MyString
-  question_id: 1
+option_two:
+  title: Fish and Salad
+  question: question_one
