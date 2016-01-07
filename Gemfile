@@ -43,3 +43,7 @@ group :development, :test do
   gem 'spring'
 end
 
+group :test do
+  gem 'minitest-reporters', '1.0.5'
+end
+
