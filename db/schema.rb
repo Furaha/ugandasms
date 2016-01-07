@@ -11,7 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160105125639) do
+ActiveRecord::Schema.define(version: 20160107075947) do
+
+  create_table "campaigns", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "options", force: :cascade do |t|
     t.string   "title"
@@ -21,9 +27,10 @@ ActiveRecord::Schema.define(version: 20160105125639) do
   end
 
   create_table "questions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.string   "title"
+    t.integer  "campaign_id"
   end
 
 end
