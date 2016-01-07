@@ -14,6 +14,11 @@ class QuestionTest < ActiveSupport::TestCase
     assert_not @question.valid?
   end
 
+  test 'invalid without a campaign_id' do
+    @question.campaign_id = nil
+    assert_not @question.valid?
+  end
+
   test 'has many options' do
     assert @question.options.count > 1
   end

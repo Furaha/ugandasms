@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  title: MyString
+malaria:
+  title: Malaria 2016
 
-two:
-  title: MyString
+diet:
+  title: Diet in Young Children
