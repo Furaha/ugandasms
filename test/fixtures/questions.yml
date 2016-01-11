@@ -6,6 +6,8 @@
 #
 question_one:
   title: what is your favourite food?
+  campaign: diet
 
 question_two:
-  title: what is your favourite programming language?
+  title: do you know about proteins
+  campaign: diet
