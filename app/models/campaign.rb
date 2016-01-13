@@ -1,5 +1,5 @@
 class Campaign < ActiveRecord::Base
-	has_attached_file :file,
+  has_attached_file :file,
                     :path => ":rails_root/app/campaigns/:id/:filename",
                     :url => "/campaigns/:id/:filename"
   validates_attachment :file, presence: true,
