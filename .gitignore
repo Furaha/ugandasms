@@ -24,3 +24,6 @@ database.yml
 doc/
 *.swp
 *~
+
+#ignore the campaigns directory
+/app/campaigns
