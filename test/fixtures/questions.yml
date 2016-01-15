@@ -6,8 +6,8 @@
 #
 question_one:
   title: what is your favourite food?
-  campaign: diet
+  campaign: malaria
 
 question_two:
   title: do you know about proteins
-  campaign: diet
+  campaign: malaria
