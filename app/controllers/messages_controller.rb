@@ -40,7 +40,7 @@ class MessagesController < ApplicationController
         participant.track_campaign(@campaign.id, @new_question_count)
       else
         respond("Thank You For Participating")
-        participant.track_campaign(@campaign.id, @new_question_count)
+        participant.track_campaign(nil, nil)
       end
     end
 
