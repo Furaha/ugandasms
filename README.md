@@ -2,8 +2,7 @@
 
 Inorder to get this Up and Running
 
-1. You need to create a file under the config directory
-`config/local_env.yml`
+1. You need to create a file under the config directory `config/local_env.yml`
 
 File Content
 
@@ -21,6 +20,7 @@ However you need to set up a number for recieving and sending texts(i.e the user
 
 
 please follow this instructions
+
 1. Go to Your Twilio Developer account
 2. Under Products, Select Phone Numbers
 3. Select The Phone Number You Want To Recieve Texts On
