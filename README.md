@@ -11,6 +11,7 @@ File Content
 TWILIO_ACCOUNT_SID: 'your twilio SID'
 TWILIO_AUTH_TOKEN: 'your twilio auth token'
 TWILIO_NUMBER: 'your twilio number'
+```
 
 This is all you need to be able to send texts
 
