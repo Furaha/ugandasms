@@ -10,4 +10,8 @@ class Participant < ActiveRecord::Base
     )
     puts message.to
   end
+
+  def track_campaign(campaign_id, question_count)
+    self.update(question_count: question_count, current_campaign: campaign_id)    
+  end
 end
