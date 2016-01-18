@@ -24,3 +24,9 @@ database.yml
 doc/
 *.swp
 *~
+
+#ignore the variables
+config/local_env.yml
+
+#ignore test campaign files 
+app/campaigns
