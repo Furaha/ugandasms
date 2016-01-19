@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CampaignTest < ActiveSupport::TestCase
   def setup
-    @campaign = campaigns(:diet)
+    @campaign = campaigns(:malaria)
   end
 
   test 'should be valid' do

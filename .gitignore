@@ -25,5 +25,8 @@ doc/
 *.swp
 *~
 
-#ignore the campaigns directory
-/app/campaigns
+#ignore the variables
+config/local_env.yml
+
+#ignore test campaign files 
+app/campaigns

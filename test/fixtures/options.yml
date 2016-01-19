@@ -1,9 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 option_one:
-  title: Rice and Beans
+  title: Mosquito
   question: question_one
 
 option_two:
-  title: Fish and Salad
+  title: HouseFly
   question: question_one
