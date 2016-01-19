@@ -21,7 +21,7 @@ class CampaignsControllerTest < ActionController::TestCase
     @file ||= File.open(File.expand_path( '../../file/test.yml', __FILE__))
   end
 
-  def uploaded_file(klass, attribute, file, content_type = 'text/yml')
+  def uploaded_file(klass, attribute, file, content_type = 'text/x-yaml')
     filename = File.basename(file.path)
     klass_label = klass.to_s.underscore
    
