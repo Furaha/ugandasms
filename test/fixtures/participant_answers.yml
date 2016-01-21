@@ -4,10 +4,16 @@ one:
   participant: one
   campaign: malaria
   question: question_one
-  option_id: option_one
+  option: option_one
 
 two:
   participant: one
   campaign: malaria
   question: question_one
-  option_id: option_two
+  option: option_two
+
+three:
+  participant: three
+  campaign: malaria
+  question: question_one
+  option: option_one
