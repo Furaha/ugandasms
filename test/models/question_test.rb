@@ -22,4 +22,8 @@ class QuestionTest < ActiveSupport::TestCase
   test 'has many options' do
     assert @question.options.count > 1
   end
+
+  test 'has many participant_anwsers' do
+    assert @question.participant_answers.count > 1
+  end
 end
