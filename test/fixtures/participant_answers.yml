@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  participant: one
+  campaign: malaria
+  question: question_one
+  option: option_one
+
+two:
+  participant: one
+  campaign: malaria
+  question: question_one
+  option: option_two
+
+three:
+  participant: three
+  campaign: malaria
+  question: question_one
+  option: option_one
