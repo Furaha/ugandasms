@@ -24,6 +24,6 @@ class QuestionTest < ActiveSupport::TestCase
   end
 
   test 'has many participant_anwsers' do
-    assert @question.participant_answers.count > 1
+    assert @question.answers.count > 1
   end
 end

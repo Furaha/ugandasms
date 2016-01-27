@@ -19,6 +19,6 @@ class CampaignTest < ActiveSupport::TestCase
   end
 
   test 'has many participant_anwsers' do
-    assert @campaign.participant_answers.count > 1
+    assert @campaign.answers.count > 1
   end
 end

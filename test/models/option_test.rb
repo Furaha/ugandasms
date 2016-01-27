@@ -20,6 +20,6 @@ class OptionTest < ActiveSupport::TestCase
   end
 
   test 'has many participant_anwsers' do
-    assert @option.participant_answers.count > 1
+    assert @option.answers.count > 1
   end
 end
