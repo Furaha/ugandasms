@@ -5,6 +5,6 @@ class Campaign < ActiveRecord::Base
   validates_attachment :file, presence: true,
                               content_type: { content_type: "text/x-yaml"}
   has_many :questions, dependent: :delete_all
-  has_many :participant_answers, dependent: :delete_all
+  has_many :answers
   validates :title, presence: true
 end
