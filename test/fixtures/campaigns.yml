@@ -2,6 +2,14 @@
 
 malaria:
   title: Malaria 2016
+  file_file_name: "JanCampaign.yaml"
+  file_content_type:  "text/x-yaml"
+  file_file_size: 91
+  file_updated_at: 2016-01-28 05:59:44.838347
 
 diet:
   title: Diet in Young Children
+  file_file_name: "JanCampaign.yaml"
+  file_content_type:  "text/x-yaml"
+  file_file_size: 91
+  file_updated_at: 2016-01-28 05:59:44.838347
