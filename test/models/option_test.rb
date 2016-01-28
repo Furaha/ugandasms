@@ -19,7 +19,7 @@ class OptionTest < ActiveSupport::TestCase
     assert_not @option.valid?
   end
 
-  test 'has many participant_anwsers' do
+  test 'has many answers' do
     assert @option.answers.count > 1
   end
 end
