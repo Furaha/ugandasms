@@ -18,7 +18,12 @@ class CampaignTest < ActiveSupport::TestCase
     assert @campaign.questions.count > 1
   end
 
-  test 'has many participant_anwsers' do
-    assert @campaign.participant_answers.count > 1
+  test 'has many answers' do
+    assert @campaign.answers.count > 1
+  end
+
+  test 'can have more than one unique answer per participant' do
+    assert @campaign.answers.first != @campaign.answers[1]
+    assert @campaign.answers.first.participant == @campaign.answers[1].participant
   end
 end

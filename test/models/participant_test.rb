@@ -14,7 +14,7 @@ class ParticipantTest < ActiveSupport::TestCase
     assert_not @participant.valid?
   end
 
-  test 'has many participant_anwsers' do
-    assert @participant.participant_answers.count > 1
+  test 'has many answers' do
+    assert @participant.answers.count > 1
   end
 end

@@ -1,4 +1,4 @@
-class ParticipantAnswer < ActiveRecord::Base
+class Answer < ActiveRecord::Base
   belongs_to :participant
   belongs_to :campaign
   belongs_to :question

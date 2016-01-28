@@ -9,7 +9,7 @@ one:
 two:
   participant: one
   campaign: malaria
-  question: question_one
+  question: question_two
   option: option_two
 
 three:

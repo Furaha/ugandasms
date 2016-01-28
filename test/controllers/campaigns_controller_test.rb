@@ -13,7 +13,7 @@ class CampaignsControllerTest < ActionController::TestCase
 
   test "POST create" do
   	post :create, :campaign => { :title => "malaria campaign", 
-  		:file => Rack::Test::UploadedFile.new(Rails.root.join('test', 'fixtures', 'test.yml'), 'text/x-yaml') }
+  		:file => Rack::Test::UploadedFile.new(Rails.root.join('app', 'campaigns', 'test.yml'), 'text/x-yaml') }
   	assert_response 302
   end
 
