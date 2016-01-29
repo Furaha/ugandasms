@@ -10,7 +10,7 @@ two:
   participant: one
   campaign: malaria
   question_text: "Have you ever suffered from Malaria?"
-  option: "Yes"
+  question_reply: "Yes"
 
 three:
   participant: three
