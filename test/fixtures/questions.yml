@@ -9,5 +9,9 @@ question_one:
   campaign: malaria
 
 question_two:
-  title: do you know about proteins
+  title: do you know about proteins?
+  campaign: malaria
+
+question_three:
+  title: how can one prevent malaria?
   campaign: malaria
