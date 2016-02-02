@@ -18,4 +18,8 @@ class OptionTest < ActiveSupport::TestCase
     @option.question_id = nil
     assert_not @option.valid?
   end
+
+  test 'should belong to a particular question' do
+    assert @option.question.valid?
+  end
 end
