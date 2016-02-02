@@ -19,7 +19,7 @@ class OptionTest < ActiveSupport::TestCase
     assert_not @option.valid?
   end
 
-  test 'has many answers' do
-    assert @option.answers.count > 1
+  test 'should belong to a particular question' do
+    assert @option.question.valid?
   end
 end
