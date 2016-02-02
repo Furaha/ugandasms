@@ -3,17 +3,17 @@
 one:
   participant: one
   campaign: malaria
-  question: question_one
-  option: option_one
+  question_text: "Do you Know About Malaria?"
+  question_reply: "Yes"
 
 two:
   participant: one
   campaign: malaria
-  question: question_two
-  option: option_two
+  question_text: "Have you ever suffered from Malaria?"
+  question_reply: "Yes"
 
 three:
   participant: three
   campaign: malaria
-  question: question_one
-  option: option_one
+  question_text: "Do you Know About Malaria"
+  question_reply: "Yes"

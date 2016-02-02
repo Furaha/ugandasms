@@ -22,8 +22,4 @@ class QuestionTest < ActiveSupport::TestCase
   test 'has many options' do
     assert @question.options.count > 1
   end
-
-  test 'has many answers' do
-    assert @question.answers.count > 1
-  end
 end
