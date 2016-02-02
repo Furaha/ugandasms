@@ -9,12 +9,12 @@ class AnswerTest < ActiveSupport::TestCase
     assert @answer.valid?
   end
 
-  test 'invalid without an option_id' do
+  test 'invalid without an question_reply' do
     @answer.question_reply = nil
     assert_not @answer.valid?
   end
 
-  test 'invalid without a question_id' do
+  test 'invalid without a question_text' do
     @answer.question_text = nil
     assert_not @answer.valid?
   end
