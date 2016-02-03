@@ -125,6 +125,9 @@ install_rbenv() {
     $rbenv global  $LATEST
     $rbenv rehash
     echo "Installed ruby $LATEST"
+
+    gem install bundler
+    echo "Install gem bundler"
   else
     echo "ruby $LATEST already installed"
   fi
