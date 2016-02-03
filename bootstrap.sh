@@ -124,7 +124,7 @@ install_rbenv() {
   # Install a ruby
   if [[ ! -d "$rbenv/version/$LATEST" ]]; then
     if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-      CONFIGURE_OPTS="--disable-install-doc" $rbenv install -v $LATEST 
+      CCONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST ONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST 
       $rbenv global  $LATEST
       $rbenv rehash
       echo "Installed ruby $LATEST"
