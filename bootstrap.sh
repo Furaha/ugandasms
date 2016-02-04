@@ -96,7 +96,7 @@ install_postgres() {
 }
 
 install_rbenv() {
-  if [ ! `which rbenv` ]; then
+  if [ ! -d $HOME/.rbenv ]; then
     msg "installing rbenv"
     git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
 
@@ -115,18 +115,25 @@ install_rbenv() {
 
   rbenv=$HOME/.rbenv/bin/rbenv
 
-  LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1`
+  LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1 | xargs`
+
+  echo "LATEST = $LATEST"
 
   #LATEST='2.1.5'
 
   # Install a ruby
-  if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-    CONFIGURE_OPTS="--disable-install-doc" $rbenv install -v $LATEST 
-    $rbenv global  $LATEST
-    $rbenv rehash
-    echo "Installed ruby $LATEST"
-  else
-    echo "ruby $LATEST already installed"
+  if [[ ! -d "$rbenv/version/$LATEST" ]]; then
+    if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
+      CCONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST ONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST 
+      $rbenv global  $LATEST
+      $rbenv rehash
+      echo "Installed ruby $LATEST"
+
+      $HOME/.rbenv/shims/gem install bundler
+      echo "Install gem bundler"
+    else
+      echo "ruby $LATEST already installed"
+    fi
   fi
 
   INSTALLED+="- rbenv"

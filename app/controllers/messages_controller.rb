@@ -1,5 +1,9 @@
 class MessagesController < ApplicationController
+
   require 'twilio-ruby' 
+
+  skip_before_filter  :verify_authenticity_token
+
   def send_questions
     @campaign = Campaign.find(params[:campaign_id])
     @question_one = @campaign.questions.first
@@ -17,7 +21,7 @@ class MessagesController < ApplicationController
     @phone_number = params[:From]
     @body = if params[:Body].nil? then '' else params[:Body].downcase end
     if @body.blank?
-      respond('Sorry No reply was recieved, please try again')
+      respond('Sorry No reply was received, please try again')
     else
       @participant = Participant.find_by(number: @phone_number)
       process_message(@participant, @body)
@@ -37,7 +41,7 @@ class MessagesController < ApplicationController
         participant.track_campaign(nil, nil)
       else
         respond(@next_question.title)
-        participant.track_campaign(@campaign.id, (self.question_count + 1))
+        participant.track_campaign(@campaign.id, (participant.question_count + 1))
       end
     end
 

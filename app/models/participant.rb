@@ -21,7 +21,11 @@ class Participant < ActiveRecord::Base
   end
 
   def tracked_campaign
-    return Campaign.find(self.current_campaign)
+    if self.current_campaign.nil?
+      return nil
+    else
+      return Campaign.find(self.current_campaign)
+    end
   end
 
   def campaign_incomplete?
@@ -60,7 +64,7 @@ class Participant < ActiveRecord::Base
 
   def save_answer(answer)
     Answer.create(participant_id: self.id, campaign_id: self.tracked_campaign.id,
-      question_text: self.current_question, question_reply: answer)
+                  question_text: self.current_question, question_reply: answer)
   end
 
   def campaign_is_tracked?(campaign_record_id)
