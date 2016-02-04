@@ -2,5 +2,5 @@ Rails.application.routes.draw do
   root 'campaigns#index'
   resources :campaigns
   match '/send_question', to: 'messages#send_questions', via: :post, as: :send_questions
-  match '/recieve_texts', to: 'messages#recieve_texts', via: :post, as: :recieve_texts
+  match '/receive_texts', to: 'messages#receive_texts', via: :post, as: :receive_texts
 end
