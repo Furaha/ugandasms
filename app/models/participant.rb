@@ -13,11 +13,7 @@ class Participant < ActiveRecord::Base
   end
 
   def track_campaign(campaign_id, question_count)
-    if self.current_campaign.nil?
-      return nil
-    else
-      return Campaign.find(self.current_campaign)
-    end
+    self.update(question_count: question_count, current_campaign: campaign_id)    
   end
 
   def last_answer_entry
@@ -25,7 +21,11 @@ class Participant < ActiveRecord::Base
   end
 
   def tracked_campaign
-    return Campaign.find(self.current_campaign)
+    if self.current_campaign.nil?
+      return nil
+    else
+      return Campaign.find(self.current_campaign)
+    end
   end
 
   def campaign_incomplete?
