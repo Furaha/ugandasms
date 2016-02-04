@@ -37,10 +37,12 @@ class MessagesController < ApplicationController
       @next_question = participant.next_question
       participant.save_answer(answer)
       if @next_question.nil?
-        respond("Thank You For Participating")
+        participant.send_message("Thank You For Participating")
+        # respond("Thank You For Participating")
         participant.track_campaign(nil, nil)
       else
-        respond(@next_question.title)
+        participant.send_message(@next_question.title)
+        #respond(@next_question.title)
         participant.track_campaign(@campaign.id, (participant.question_count + 1))
       end
     end
