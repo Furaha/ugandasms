@@ -10,15 +10,7 @@ class CampaignsController < ApplicationController
   def create
     @campaign = Campaign.new(campaign_params)
     if @campaign.save
-      @data = YAML.load_file(@campaign.file.path)
-      @data.each do |question|
-        question.each do |question_title, option_array|
-          @question = Question.create(campaign_id: @campaign.id, title: question_title)
-          option_array.each do |option_value|
-            Option.create(question_id: @question.id, title: option_value)
-          end
-        end
-      end
+      save_or_update_questions(@campaign)
       redirect_to campaigns_path
     else
       redirect_to new_campaign_path
@@ -30,21 +22,42 @@ class CampaignsController < ApplicationController
   end
 
   def edit
+    @campaign = Campaign.find(params[:id])
   end
 
   def update
+    @campaign = Campaign.find(params[:id])
+    if @campaign.update_attributes(campaign_params)
+      save_or_update_questions(@campaign)
+      redirect_to campaigns_path
+    else
+      redirect_to edit_campaign_path
+    end
   end
 
   def destroy
-    @campaign = Campaign.find(params[:id])    
+    @campaign = Campaign.find(params[:id])
     @campaign.destroy
     redirect_to campaigns_path
   end
   
   private
 
+  def save_or_update_questions(campaign)
+    @data = YAML.load_file(campaign.file.path)
+    campaign.questions.destroy_all
+    @data.each do |question|
+      question.each do |question_title, option_array|
+        @question = Question.create(campaign_id: @campaign.id, title: question_title)
+        option_array.each do |option_value|
+          Option.create(question_id: @question.id, title: option_value)
+        end
+      end
+    end
+  end
+
   def campaign_params
-    params[:campaign][:file].content_type = MIME::Types.type_for(params[:campaign][:file].original_filename).first.content_type
+    params[:campaign][:file].content_type = MIME::Types.type_for(params[:campaign][:file].original_filename).first.content_type if (params[:campaign][:file]).present?
     params.require(:campaign).permit(:file, :title)
   end
 end
