@@ -24,6 +24,19 @@ class CampaignsController < ApplicationController
       redirect_to new_campaign_path
     end   
   end
+
+  def show
+    @campaign = Campaign.find(params[:id])
+  end
+
+  def edit
+  end
+
+  def update
+  end
+
+  def destroy
+  end
   
   private
 
