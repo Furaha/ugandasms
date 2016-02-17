@@ -17,13 +17,15 @@
               <tr>
                 <th></th>
                 <th>Number</th>
+                <th class="text-center">Edit|Delete</th>
               </tr>              
             </thead>
             <tbody>
               <% @participants.each do |participant| %>
                 <tr>
                   <td></td>
-                  <td><%= participant.number %></td>                  
+                  <td><%= participant.number %></td>
+                  <td class="text-center"><%= link_to('Edit', edit_participant_path(participant)) %>|<%= link_to('Delete', participant_path(participant), class: "text-danger", method: :delete)%></td>                  
                 </tr>
               <% end %>
             </tbody>            
