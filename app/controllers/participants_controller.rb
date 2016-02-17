@@ -10,9 +10,9 @@ class ParticipantsController < ApplicationController
   def create
     begin
       Participant.import(params[:file])
-      redirect_to participants_path, notice: "Products imported."
+      redirect_to participants_path, notice: "Phone Numbers imported."
     rescue
-      redirect_to participants_path, notice: "Invalid CSV file format."
+      render :new , notice: "Invalid CSV file format."
     end
   end
 
@@ -22,5 +22,22 @@ class ParticipantsController < ApplicationController
 
   def update
     @participant = Participant.find(params[:id])
+    if @participant.update_attributes(participant_params)
+      redirect_to participants_path
+    else
+      render :new
+    end
+  end
+
+  def destroy
+    @participant = Participant.find(params[:id])
+    @participant.destroy
+    redirect_to participants_path
+  end
+
+  private
+
+  def participant_params
+    params.require(:participant).permit(:number)
   end
 end
