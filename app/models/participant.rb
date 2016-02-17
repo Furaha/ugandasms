@@ -1,6 +1,22 @@
 class Participant < ActiveRecord::Base
+  require 'csv'
   validates :number, presence: true
   has_many :answers
+
+  def self.import(file)
+    CSV.foreach(file.path, headers: true) do |row|
+
+      participant_hash = row.to_hash
+      participant = Participant.where(number: participant_hash["number"])
+
+      if participant.count == 1
+        participant.first.update_attributes(participant_hash)
+      else
+        Participant.create!(participant_hash)
+      end # end if !participant.nil?
+    end # end CSV.foreach
+  end # end self.import(file)
+
   def send_message(msg)
     @twilio_number = ENV['TWILIO_NUMBER']
     @client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
