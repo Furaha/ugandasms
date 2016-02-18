@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class CampaignsControllerTest < ActionController::TestCase
+  def setup
+    @campaign = campaigns(:malaria)
+  end
+
   test "should get index" do
     get :index
     assert_response :success
@@ -15,6 +19,27 @@ class CampaignsControllerTest < ActionController::TestCase
   	post :create, :campaign => { :title => "malaria campaign", 
   		:file => Rack::Test::UploadedFile.new(Rails.root.join('app', 'campaigns', 'test.yml'), 'text/x-yaml') }
   	assert_response 302
+  end
+
+  test "GET show" do
+    get :show, id: @campaign.id
+    assert_response :success
+  end
+
+  test "GET edit" do
+    get :edit, id: @campaign.id
+    assert_response :success
+  end
+
+  test "PATCH Update" do
+    patch :update, id: @campaign.id, :campaign => { :title => "malaria campaign",
+      :file => Rack::Test::UploadedFile.new(Rails.root.join('app', 'campaigns', 'test.yml'), 'text/x-yaml') }
+    assert_response 302
+  end
+
+  test "DELETE destroy" do
+    delete :destroy, id: @campaign.id
+    assert_response 302
   end
 
   def file

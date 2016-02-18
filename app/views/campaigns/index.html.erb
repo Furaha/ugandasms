@@ -16,17 +16,19 @@
             <thead>
               <tr>
                 <th></th>
-                <th>Campaign Name</th>
-                <th>Send Questions</th>
+                <th class="text-center">Campaign Name</th>
+                <th class="text-center">Send Questions</th>
+                <th class="text-center">Edit|Delete</th>
               </tr>              
             </thead>
             <tbody>
               <% @campaigns.each do |campaign| %>
                 <tr>
                   <td></td>
-                  <td><%= campaign.title %></td>
-                  <td><%= link_to('Send Questions', send_questions_path(campaign_id: campaign.id),
+                  <td class="text-center"><%= link_to campaign.title, campaign_path(campaign) %></td>
+                  <td class="text-center"><%= link_to('Send Questions', send_questions_path(campaign_id: campaign.id),
                     class: "btn btn-primary", method: :post) %></td>
+                  <td class="text-center"><%= link_to('Edit', edit_campaign_path(campaign)) %>|<%= link_to('Delete', campaign_path(campaign), class: "text-danger", method: :delete)%></td>
                 </tr>
               <% end %>
             </tbody>            
