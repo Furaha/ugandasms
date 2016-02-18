@@ -28,7 +28,7 @@ class ParticipantsController < ApplicationController
       flash[:success] = "Successful Update"
       redirect_to participants_path
     else
-      flash[:danger] = "@participant.errors.full_messages.to_sentence"
+      flash[:danger] = "#{@participant.errors.full_messages.to_sentence}"
       render :new
     end
   end
