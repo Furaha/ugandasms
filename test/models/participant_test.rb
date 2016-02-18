@@ -50,4 +50,10 @@ class ParticipantTest < ActiveSupport::TestCase
     @participant.track_campaign(@campaign.id,1)
     assert @participant.current_question == "what is your favourite food?"
   end
+
+  test 'import' do
+    Participant.delete_all
+    Participant.import(Rack::Test::UploadedFile.new(Rails.root.join('app', 'campaigns', 'test.csv'), 'text/csv'))
+    assert Participant.count == 4
+  end
 end
