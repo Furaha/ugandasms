@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
 
   skip_before_filter  :verify_authenticity_token
 
-  def send_questions
+  def start_campaign
     @campaign = Campaign.find(params[:campaign_id])
     @question_one = @campaign.questions.first
     @participants = Participant.all
