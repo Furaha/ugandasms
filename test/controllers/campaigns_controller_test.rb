@@ -11,15 +11,15 @@ class CampaignsControllerTest < ActionController::TestCase
   end
 
   test "GET new" do
-  	get :new
-  	assert_response :success
+    get :new
+    assert_response :success
   end
 
   test "POST create" do
-  	post :create, :campaign => { :title => "malaria campaign", 
-  		:file => Rack::Test::UploadedFile.new(Rails.root.join('app', 'campaigns', 'test.yml'), 'text/x-yaml') }
+    post :create, :campaign => { :title => "malaria campaign", 
+      :file => Rack::Test::UploadedFile.new(Rails.root.join('app', 'campaigns', 'test.yml'), 'text/x-yaml') }
     assert_equal flash[:success], "The Campaign has been Successfully created"
-  	assert_response 302
+    assert_response 302
   end
 
   test "POST create[wrong file type]" do
