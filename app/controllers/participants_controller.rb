@@ -10,9 +10,11 @@ class ParticipantsController < ApplicationController
   def create
     begin
       Participant.import(params[:file])
-      redirect_to participants_path, notice: "Phone Numbers imported."
+      flash[:success] = "Phone Numbers imported"
+      redirect_to participants_path
     rescue
-      render :new , notice: "Invalid CSV file format."
+      flash[:danger] = "Invalid CSV file format"
+      render :new 
     end
   end
 
@@ -23,8 +25,10 @@ class ParticipantsController < ApplicationController
   def update
     @participant = Participant.find(params[:id])
     if @participant.update_attributes(participant_params)
+      flash[:success] = "Successful Update"
       redirect_to participants_path
     else
+      flash[:danger] = "#{@participant.errors.full_messages.to_sentence}"
       render :new
     end
   end

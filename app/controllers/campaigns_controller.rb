@@ -11,9 +11,11 @@ class CampaignsController < ApplicationController
     @campaign = Campaign.new(campaign_params)
     if @campaign.save
       save_or_update_questions(@campaign)
+      flash[:success] = "The Campaign has been Successfully created"
       redirect_to campaigns_path
     else
-      redirect_to new_campaign_path
+      flash[:danger] = "#{@campaign.errors.full_messages.to_sentence}"
+      render :new 
     end   
   end
 
@@ -29,9 +31,11 @@ class CampaignsController < ApplicationController
     @campaign = Campaign.find(params[:id])
     if @campaign.update_attributes(campaign_params)
       save_or_update_questions(@campaign)
+      flash[:success] = "The Campaign has been Successfully updated"
       redirect_to campaigns_path
     else
-      redirect_to edit_campaign_path
+      flash[:danger] = "#{@campaign.errors.full_messages.to_sentence}"
+      render :edit
     end
   end
 
