@@ -1,8 +1,6 @@
 class MessagesController < ApplicationController
   require 'twilio-ruby' 
 
-  skip_before_filter  :verify_authenticity_token
-
   def start_campaign
     @campaign = Campaign.find(params[:campaign_id])
     @question_one = @campaign.questions.first
@@ -14,5 +12,16 @@ class MessagesController < ApplicationController
       end
     end
     redirect_to root_path
-  end  
+  end
+
+  def send_question
+    @campaign = Campaign.find(params[:campaign_id])
+    @question = Question.find(params[:question_id])
+    @participants = Participant.all
+    @participants.each do |participant|
+      participant.send_message(@question.message)
+    end
+    flash[:success] = "The Question has been Successfully sent"
+    redirect_to campaign_path(@campaign)
+  end
 end
