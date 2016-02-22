@@ -1,0 +1,26 @@
+<%# Rails flash messages styled for Bootstrap 3.0 %>
+<% flash.each do |name, msg| %>
+  <%
+     case name
+     when 'notice'
+          key = 'info'
+     when 'error'
+         key = 'danger'
+     when 'alert'
+         key = 'warning'
+     else
+         key = name
+     end
+  %>
+
+  <% if msg.is_a?(String) %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-<%= key %>">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <div id="flash_<%= key %>"> <%= msg.html_safe %> </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

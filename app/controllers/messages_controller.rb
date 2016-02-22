@@ -1,7 +1,9 @@
 class MessagesController < ApplicationController
   require 'twilio-ruby' 
 
-  def send_questions
+  skip_before_filter  :verify_authenticity_token
+
+  def start_campaign
     @campaign = Campaign.find(params[:campaign_id])
     @question_one = @campaign.questions.first
     @participants = Participant.all
