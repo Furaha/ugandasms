@@ -1,8 +1,5 @@
 class MessagesController < ApplicationController
-
   require 'twilio-ruby' 
-
-  skip_before_filter  :verify_authenticity_token
 
   def send_questions
     @campaign = Campaign.find(params[:campaign_id])
@@ -11,7 +8,7 @@ class MessagesController < ApplicationController
     @participants.each do |participant|
       if !participant.campaign_is_tracked?(@campaign.id)
         participant.send_message(@question_one.message)
-        participant.track_campaign(@campaign.id, 1)
+        participant.track_campaign(@campaign.id)
       end
     end
     redirect_to root_path
@@ -28,30 +25,4 @@ class MessagesController < ApplicationController
     end
     render nothing: true
   end
-
-  private
-
-  # Process incoming SMS
-    def process_message(participant, answer)
-      @campaign = participant.tracked_campaign
-      @next_question = participant.next_question
-      participant.save_answer(answer)
-      if @next_question.nil?
-        participant.send_message("Thank You For Participating")
-        # respond("Thank You For Participating")
-        participant.track_campaign(nil, nil)
-      else
-        participant.send_message(@next_question.message)
-        #respond(@next_question.title)
-        participant.track_campaign(@campaign.id, (participant.question_count + 1))
-      end
-    end
-
-    # Send an SMS back to the participant
-    def respond(message)
-      response = Twilio::TwiML::Response.new do |r|
-        r.Message message
-      end
-      render text: response.text
-    end
 end
