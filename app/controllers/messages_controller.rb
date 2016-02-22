@@ -17,6 +17,17 @@ class MessagesController < ApplicationController
     redirect_to root_path
   end
 
+  def send_question
+    @campaign = Campaign.find(params[:campaign_id])
+    @question = Question.find(params[:question_id])
+    @participants = Participant.all
+    @participants.each do |participant|
+      participant.send_message(@question.message)
+    end
+    flash[:success] = "The Question has been Successfully sent"
+    redirect_to campaign_path(@campaign)
+  end
+
   def receive_texts    
     @phone_number = params[:From]
     @body = if params[:Body].nil? then '' else params[:Body].downcase end

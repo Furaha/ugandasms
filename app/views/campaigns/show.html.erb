@@ -12,6 +12,7 @@
           <tr>            
             <th class="text-center">Question</th>
             <th class="text-center">Answers</th>
+            <th class="text-center">Send Question</th>
           </tr>              
         </thead>
         <tbody>
@@ -25,6 +26,8 @@
                 <% end %>
                 </ol>
               </td>
+              <td class="text-center"><%= link_to('Send Question', send_question_path(campaign_id: @campaign.id, question_id: question.id ),
+                    class: "btn btn-primary", method: :post) %></td>
             </tr>
           <% end %>
         </tbody>            
