@@ -5,7 +5,8 @@ class MessagesControllerTest < ActionController::TestCase
     @campaign = campaigns(:malaria)
     @question = @campaign.questions.first
   end
-  test "POST send_campaign" do
+
+  test "POST start_campaign" do
     post :start_campaign, campaign_id: @campaign.id
     assert_response 302
   end

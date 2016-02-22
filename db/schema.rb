@@ -11,20 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129093357) do
+ActiveRecord::Schema.define(version: 20160222053044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
-
-  create_table "answers", force: :cascade do |t|
-    t.integer  "participant_id"
-    t.integer  "campaign_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.string   "question_reply"
-    t.string   "question_text"
-  end
 
   create_table "campaigns", force: :cascade do |t|
     t.string   "title"
@@ -47,7 +38,6 @@ ActiveRecord::Schema.define(version: 20160129093357) do
     t.string   "number"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
-    t.integer  "question_count"
     t.integer  "current_campaign"
   end
 
