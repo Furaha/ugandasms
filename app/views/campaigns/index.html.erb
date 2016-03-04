@@ -28,7 +28,15 @@
                   <td class="text-center"><%= link_to campaign.title, campaign_path(campaign) %></td>
                   <td class="text-center"><%= link_to('Send Questions', start_campaign_path(campaign_id: campaign.id),
                     class: "btn btn-primary", method: :post) %></td>
-                  <td class="text-center"><%= link_to('Edit', edit_campaign_path(campaign)) %>|<%= link_to('Delete', campaign_path(campaign), class: "text-danger", method: :delete)%></td>
+                  <td class="text-center">
+                    <%= link_to('Edit', edit_campaign_path(campaign), 
+                                class: "btn btn-warning") %> 
+                    <%= link_to('Delete', campaign_path(campaign), 
+                                class: "btn btn-danger", 
+                                method: :delete,
+                                data: { confirm: "Are you sure?" }
+                               ) %>
+                  </td>
                 </tr>
               <% end %>
             </tbody>            

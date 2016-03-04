@@ -4,35 +4,41 @@
     <div class="col-md-12">
       <h4 class="text-center">Participants</h4>
       <hr class="star-primary"><br/>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="add-company-button">
-          <%= link_to "Add Participants", new_participant_path, class: "btn btn-success" %>
-        </div><br/><br/>
-      </div>
-      <div class="col-md-12">
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Number</th>
-                <th class="text-center">Edit|Delete</th>
-              </tr>              
-            </thead>
-            <tbody>
-              <% @participants.each do |participant| %>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="add-company-button">
+            <%= link_to "Add Participants", new_participant_path, class: "btn btn-success" %>
+          </div><br/><br/>
+        </div>
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
                 <tr>
-                  <td></td>
-                  <td><%= participant.number %></td>
-                  <td class="text-center"><%= link_to('Edit', edit_participant_path(participant)) %>|<%= link_to('Delete', participant_path(participant), class: "text-danger", method: :delete)%></td>                  
-                </tr>
-              <% end %>
-            </tbody>            
-          </table>
-          
-        </div>        
-      </div>
-    </div>
-  </div>
-</div>
+                  <th></th>
+                  <th>Number</th>
+                  <th class="text-center">Edit|Delete</th>
+                </tr>              
+              </thead>
+              <tbody>
+                <% @participants.each do |participant| %>
+                  <tr>
+                    <td></td>
+                    <td><%= participant.number %></td>
+                    <td class="text-center">
+                      <%= link_to('Edit', edit_participant_path(participant), 
+                                  class: "btn btn-warning") %>
+                      <%= link_to('Delete', participant_path(participant), 
+                                  class: "btn btn-danger", 
+                                  method: :delete,
+                                  data: { confirm: "Are you sure?" }) %>
+                   </td>                  
+                 </tr>
+               <% end %>
+             </tbody>            
+           </table>
+         </div>        
+       </div>
+     </div>
+   </div>
+ </div>
