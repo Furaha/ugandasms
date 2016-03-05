@@ -28,5 +28,10 @@ doc/
 #ignore the variables
 config/local_env.yml
 
+# Ignore Spring files.
+/spring/*.pid
+
 #ignore test campaign files 
 app/campaigns
+
+
