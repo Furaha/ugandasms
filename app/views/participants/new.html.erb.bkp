@@ -1,0 +1,15 @@
+<h3 class="text-center">Add Phone contacts</h3>
+<%= form_tag participants_path, :multipart => true,
+  class: "form-horizontal col-sm-offset-4", role: "form" do %>
+  <div class="form-group">
+    <%= label_tag(:file, "File: *", class: "control-label col-sm-2") %>
+    <div class="col-sm-4">
+      <%= file_field_tag :file, class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-4">
+      <%= submit_tag "Import", class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
