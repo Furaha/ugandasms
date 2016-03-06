@@ -11,11 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160306001956) do
+ActiveRecord::Schema.define(version: 20160306050934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
+
+  create_table "add_admin_to_users", force: :cascade do |t|
+  end
 
   create_table "campaigns", force: :cascade do |t|
     t.string   "title"
@@ -53,6 +56,7 @@ ActiveRecord::Schema.define(version: 20160306001956) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.string   "password_digest"
+    t.boolean  "admin"
   end
 
   add_index "users", ["name"], name: "index_users_on_name", unique: true, using: :btree

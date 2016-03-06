@@ -1,8 +1,7 @@
 class CreateAddAdminToUsers < ActiveRecord::Migration
   def change
     create_table :add_admin_to_users do |t|
-
-      t.timestamps null: false
+      add_column :users, :admin, :boolean
     end
   end
 end
