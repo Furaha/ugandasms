@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/new'
+
   root 'campaigns#index'
 
   get    'login' => 'sessions#new'
