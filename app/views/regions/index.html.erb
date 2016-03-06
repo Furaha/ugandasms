@@ -2,6 +2,7 @@
 
 <%= link_to 'Add New Region', new_region_path, class: "btn btn-primary" %>
 <% @regions.each do |region| %>
+  <hr />
   <h3><%= region.name %> <%= link_to "Add Program", new_program_path(:region => region), class: "btn btn-primary btn-xs" %></h3>
   <div>
   </div>
