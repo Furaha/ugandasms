@@ -1,21 +1,18 @@
-<%= form_for(@region) do |f| %>
+<%= form_for @region, html: {class: "form-horizontal"} do |f| %>
   <% if @region.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@region.errors.count, "error") %> prohibited this region from being saved:</h2>
-
-      <ul>
       <% @region.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+        <ul>
+          <li><%= message %></li>
+        </ul>
       <% end %>
-      </ul>
-    </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
+  <div class="form-group <%= "has-error" if @region.errors.any? %>">
+    <%= f.label :name, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
   </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <%= f.submit "Add Region", class: "btn btn-primary" %>
 <% end %>

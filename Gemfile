@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.3' # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'pg' # Use sqlite3 as the database for Active Record
+gem 'bootstrap-sass', '~> 3'
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'coffee-rails', '~> 4.1.0' # Use CoffeeScript for .coffee assets and views

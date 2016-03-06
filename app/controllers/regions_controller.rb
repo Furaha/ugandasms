@@ -28,7 +28,7 @@ class RegionsController < ApplicationController
 
     respond_to do |format|
       if @region.save
-        format.html { redirect_to @region, notice: 'Region was successfully created.' }
+        format.html { redirect_to root_path, notice: 'Region was successfully created.' }
         format.json { render :show, status: :created, location: @region }
       else
         format.html { render :new }
