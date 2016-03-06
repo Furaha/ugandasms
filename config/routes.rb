@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
+  resources :programs
   get 'users/new'
 
   root 'regions#index'
 
   resources :regions
+  resources :programs
 
   get    'login' => 'sessions#new'
   post   'login' => 'sessions#create'

@@ -4,6 +4,10 @@ malaria:
   name: Malaria
   region: uganda
 
+happiness:
+  name: Happiness
+  region: uganda
+
 diet:
   name: Diet
   region: nepal

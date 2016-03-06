@@ -2,7 +2,11 @@
 
 <%= link_to 'Add New Region', new_region_path, class: "btn btn-primary" %>
 <% @regions.each do |region| %>
-  <h1><%= link_to region.name, region, class: "lead" %></h1>
+  <h1 class="lead"><%= region.name %></h1>
+    <% region.programs.each do |program| %>
+      <div><%= link_to program.name, program %></div>
+    <% end %>
+  </table>
 <% end %>
 
 <!-- 
