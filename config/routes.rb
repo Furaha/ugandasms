@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'sessions/new'
+
   root 'campaigns#index'
   resources :campaigns
   match '/start_campaign', to: 'messages#start_campaign', via: :post, as: :start_campaign
