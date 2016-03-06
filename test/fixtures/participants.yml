@@ -1,10 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  number: "+255788564570"
+  number: "+15551231234"
 
-two:
-  number: "+255788564570"
-
-three:
-  number: "+255788564570"
