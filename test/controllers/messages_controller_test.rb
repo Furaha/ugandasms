@@ -7,13 +7,13 @@ class MessagesControllerTest < ActionController::TestCase
   end
 
   test "POST start_campaign" do
-    skip
+    skip('mock this shit')
     post :start_campaign, campaign_id: @campaign.id
     assert_response 302
   end
 
   test "POST send_question" do
-    skip
+    skip('mock this shit')
     post :send_question, campaign_id: @campaign.id, question_id: @question.id
     assert_response 302
   end

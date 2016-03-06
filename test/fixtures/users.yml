@@ -1,5 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  number: "+15551231234"
+  name: Billy
+  password_digest: <%= User.digest('foobar') %>
+
 
