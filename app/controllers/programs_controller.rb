@@ -15,6 +15,7 @@ class ProgramsController < ApplicationController
   # GET /programs/new
   def new
     @program = Program.new
+    @program.region_id = params[:region]
   end
 
   # GET /programs/1/edit
