@@ -2,4 +2,6 @@
 
 one:
   name: Billy
+  password_digest: <%= User.digest('foobar') %>
+
 
