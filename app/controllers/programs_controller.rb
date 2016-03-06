@@ -29,7 +29,7 @@ class ProgramsController < ApplicationController
 
     respond_to do |format|
       if @program.save
-        format.html { redirect_to @program, notice: 'Program was successfully created.' }
+        format.html { redirect_to root_path, notice: "Program #{@program.name} for #{@program.region.name} was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
         format.html { render :new }
@@ -70,6 +70,6 @@ class ProgramsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def program_params
-      params[:program]
+      params.require(:program).permit(:name, :region_id)
     end
 end

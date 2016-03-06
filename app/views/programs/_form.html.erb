@@ -1,17 +1,25 @@
-<%= form_for(@program) do |f| %>
+<%= form_for @program, html: {class: "form-horizontal"} do |f| %>
   <% if @program.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@program.errors.count, "error") %> prohibited this program from being saved:</h2>
-
       <ul>
-      <% @program.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% @program.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
+  <div class="form-group"> 
+    <%= f.label "Region", class: "col-sm-2 control-label" %>
+    <%= f.label @program.region.name, class: "col-sm-2 control-label text-left" %>
+    <%= f.hidden_field :region_id %>
   </div>
+
+  <div class="form-group <%= "has-error" if @program.errors.any? %>">
+    <%= f.label :name, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+  </div>
+  <%= f.submit "Add Program", class: "btn btn-primary" %>
 <% end %>
