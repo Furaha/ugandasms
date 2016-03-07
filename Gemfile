@@ -17,7 +17,6 @@ gem 'bcrypt'
 # Moar gems
 gem "paperclip",  :git => "git://github.com/thoughtbot/paperclip.git"
 gem 'twilio-ruby'
-gem 'awesome_nested_fields'
 
 group :development, :test do
   gem 'byebug' # Call 'byebug' anywhere in the code to stop execution and get a debugger console
