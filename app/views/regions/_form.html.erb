@@ -1,11 +1,12 @@
 <%= form_for @region, html: {class: "form-horizontal"} do |f| %>
   <% if @region.errors.any? %>
     <div id="error_explanation">
-      <% @region.errors.full_messages.each do |message| %>
-        <ul>
+      <ul>
+        <% @region.errors.full_messages.each do |message| %>
           <li><%= message %></li>
-        </ul>
-      <% end %>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
 
   <div class="form-group <%= "has-error" if @region.errors.any? %>">
