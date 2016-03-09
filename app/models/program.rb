@@ -5,5 +5,6 @@ class Program < ActiveRecord::Base
   validates_uniqueness_of :name
 
   has_many :messages
+  has_many :recipients
   accepts_nested_attributes_for :messages, allow_destroy: true
 end

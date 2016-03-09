@@ -1,17 +1,18 @@
 Rails.application.routes.draw do
-  resources :programs
-  get 'users/new'
-
-  root 'regions#index'
 
   resources :regions
+  resources :recipients
   resources :programs
+
+  get 'users/new'
 
   get    'login' => 'sessions#new'
   post   'login' => 'sessions#create'
   delete 'logout' => 'sessions#destroy'
 
-  resources :participants
+  root 'regions#index'
+
+  # resources :participants
 
   #resources :campaigns
 

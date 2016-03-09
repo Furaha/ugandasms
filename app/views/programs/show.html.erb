@@ -2,5 +2,21 @@
 
 <h1><%= @program.name %></h1>
 
+<h3>Messages</h3>
+<ul class="list-unstyled">
+  <% @program.messages.each do |message| %>
+    <li><%= message.title %></li>
+  <% end %>
+</ul>
+
+<h3>Recipients</h3>
+<ul class="list-unstyled">
+  <% @program.recipients.each do |recipient| %>
+    <li><%= recipient.number %> <%= recipient.name %> </li>
+  <% end %>
+</ul>
+
+<!-- 
 <%= link_to 'Edit', edit_program_path(@program) %> |
 <%= link_to 'Back', programs_path %>
+-->
