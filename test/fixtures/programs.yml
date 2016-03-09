@@ -1,13 +1,35 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-malaria:
-  name: Malaria
-  region: uganda
 
-happiness:
-  name: Happiness
-  region: uganda
+u_jn:
+  name: Uganda-Teacher-JN
+  region: Uganda
+
+u_ga:
+  name: Uganda-Teacher-GA
+  region: Uganda
+
+
+a_jn:
+  name: Arafat-Teacher-JN
+  region: Arafat
+
+a_ga:
+  name: Arafat-Teacher-GA
+  region: Arafat
+
+y_jn:
+  name: Yen-Teacher-JN
+  region: Yen
+
+_ga:
+  name: Yen-Teacher-GA
+  region: Yen
 
 diet:
+  name: Diet
+  region: nepal
+
+malaria:
   name: Diet
   region: nepal
