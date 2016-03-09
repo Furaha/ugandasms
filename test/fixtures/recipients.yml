@@ -1,5 +1,22 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+
+sabrina_y_jn:
+  name: "Sabrina Cheng"
+  number: "+19175174739"
+  program: "y_jn"
+
+yen_y_jn:
+  name: "Dr. Yen Huang"
+  number: "+13528700214"
+  program: "y_jn"
+
+
+yen_y_ga:
+  name: "Dr. Yen Huang"
+  number: "+13528700214"
+  program: "y_ga"
+
 google:
   name: "Arafat G"
   number: "+16158525850"
