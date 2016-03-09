@@ -1,7 +1,14 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: Billy
+arafat:
+  name: arafat
   password_digest: <%= User.digest('foobar') %>
 
+sabrina:
+  name: sabrina
+  password_digest: <%= User.digest('foobar') %>
+
+yen:
+  name: yen
+  password_digest: <%= User.digest('foobar') %>
 
