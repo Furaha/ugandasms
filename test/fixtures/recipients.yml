@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 google:
-  name: Arafat G
-  number: +16158525850
-  program: a_jn
+  name: "Arafat G"
+  number: "+16158525850"
+  program: "a_jn"
 
 cell:
-  name: Arafat C
-  number: +16154825480
-  program: a_jn
+  name: "Arafat C"
+  number: "+16154825480"
+  program: "a_jn"

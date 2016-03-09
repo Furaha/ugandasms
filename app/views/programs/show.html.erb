@@ -11,11 +11,9 @@
 
 <h3>Recipients</h3>
 <ul class="list-unstyled">
-  <!-- 
-  <% @program.messages.each do |message| %>
-    <li><%= message.title %></li>
+  <% @program.recipients.each do |recipient| %>
+    <li><%= recipient.number %> <%= recipient.name %> </li>
   <% end %>
-  -->
 </ul>
 
 <!-- 
