@@ -12,19 +12,19 @@ u_ga:
 
 a_jn:
   name: Arafat-Teacher-JN
-  region: Arafat
+  region: arafat
 
 a_ga:
   name: Arafat-Teacher-GA
-  region: Arafat
+  region: arafat
 
 y_jn:
   name: Yen-Teacher-JN
-  region: Yen
+  region: yen
 
 _ga:
   name: Yen-Teacher-GA
-  region: Yen
+  region: yen
 
 diet:
   name: Diet
