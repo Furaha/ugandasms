@@ -7,13 +7,11 @@
       <%= link_to region.name, region %> 
     </h3>
     <% region.programs.each do |program| %>
-      <div class="program">
-        <%= link_to program.name, program %>
-        <div>
-          <small style="white-space: nowrap;">| x messages</small>
-          <small style="white-space: nowrap;">| x recipients</small>
-        </div>
-      </div>
+      <div><%= link_to program.name, program %></div>
+      <ul class="list-inline">
+        <li> <%= program.messages.count %> messages </li>
+        <li> <%= program.messages.count %> recipients </li>
+      </ul>
     <% end %>
   </div>
 <% end %>
