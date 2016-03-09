@@ -1,17 +1,26 @@
 <div id="notice"><%= notice %></div>
 
-<%= link_to 'Add New Region', new_region_path, class: "btn btn-primary" %>
 <% @regions.each do |region| %>
-  <hr />
-  <h3><%= region.name %> <%= link_to "Add Program", new_program_path(:region => region), class: "btn btn-primary btn-xs" %></h3>
-  <div>
+  <div class="region">
+    <hr />
+    <h3>
+      <%= region.name %>
+      <small> x Participants </small>
+    </h3>
+    <% region.programs.each do |program| %>
+      <div class="col-md-12">
+        <%= link_to program.name, program %>
+      </div>
+    <% end %>
+    <div>
+      <%= link_to "Add Program", new_program_path(:region => region), class: "btn btn-info btn-xs" %>
+    </div>
   </div>
-
-  <% region.programs.each do |program| %>
-    <div><%= link_to program.name, program %></div>
-  <% end %>
-</table>
 <% end %>
+<hr />
+<div>
+  <%= link_to 'Add New Region', new_region_path, class: "btn btn-primary" %>
+</div>
 
 <!-- 
 <h1>Listing Regions</h1>
