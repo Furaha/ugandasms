@@ -4,17 +4,12 @@
   <div class="region">
     <hr />
     <h3>
-      <%= region.name %>
-      <small> x Participants </small>
+      <%= region.name %> 
+      |
+      <small><%= region.programs.count %> Programs</small>
+      |
+      <small>x Participants </small> |
     </h3>
-    <% region.programs.each do |program| %>
-      <div class="col-md-12">
-        <%= link_to program.name, program %>
-      </div>
-    <% end %>
-    <div>
-      <%= link_to "Add Program", new_program_path(:region => region), class: "btn btn-info btn-xs" %>
-    </div>
   </div>
 <% end %>
 <hr />
