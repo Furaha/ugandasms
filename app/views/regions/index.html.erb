@@ -1,15 +1,20 @@
 <div id="notice"><%= notice %></div>
 
 <% @regions.each do |region| %>
+  <hr />
   <div class="region">
-    <hr />
     <h3>
       <%= link_to region.name, region %> 
-      |
-      <small><%= region.programs.count %> Programs</small>
-      |
-      <small>x Participants </small> |
     </h3>
+    <% region.programs.each do |program| %>
+      <div class="program">
+        <%= link_to program.name, program %>
+        <div>
+          <small style="white-space: nowrap;">| x messages</small>
+          <small style="white-space: nowrap;">| x recipients</small>
+        </div>
+      </div>
+    <% end %>
   </div>
 <% end %>
 <hr />
