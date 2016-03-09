@@ -3,18 +3,18 @@
 <h1><%= @program.name %></h1>
 
 <h3>Messages</h3>
-<ul class="list-unstyled">
   <% @program.messages.each do |message| %>
-    <li><%= message.title %></li>
+    <p>
+    <%= link_to "Send Message", transmit_message_path(message), class: "btn btn-primary btn-xs" %>
+    <%= message.title %>
+    </p>
   <% end %>
 </ul>
 
 <h3>Recipients</h3>
-<ul class="list-unstyled">
-  <% @program.recipients.each do |recipient| %>
-    <li><%= recipient.number %> <%= recipient.name %> </li>
-  <% end %>
-</ul>
+<% @program.recipients.each do |recipient| %>
+  <p><%= recipient.number %> <%= recipient.name %> </p>
+<% end %>
 
 <!-- 
 <%= link_to 'Edit', edit_program_path(@program) %> |
