@@ -1,5 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+
+arafat:
+  name: Arafat's Region
+
+yen:
+  name: yen's Region
+
+sabrina:
+  name: sabrina's Region
+
 uganda:
   name: Uganda
 
