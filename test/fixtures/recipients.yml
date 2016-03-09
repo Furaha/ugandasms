@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  number: MyString
-  program: 
+google:
+  name: Arafat G
+  number: +16158525850
+  program: a_jn
 
-two:
-  name: MyString
-  number: MyString
-  program: 
+cell:
+  name: Arafat C
+  number: +16154825480
+  program: a_jn
