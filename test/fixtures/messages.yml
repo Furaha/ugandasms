@@ -1,9 +1,62 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  title: MyString
-  program_id: 
+a_w1:
+  title: Arafat Week 1
+  program_id: a_jn
 
-two:
-  title: MyString
-  program_id: 
+a_w2:
+  title: Arafat Week 2
+  program_id: a_jn
+
+a_w3:
+  title: Arafat Week 3
+  program_id: a_jn
+
+a_w4:
+  title: Arafat Week 4
+  program_id: a_jn
+
+a_w5:
+  title: Arafat Week 5
+  program_id: a_jn
+
+y_w1:
+  title: Yen Week 1
+  program_id: y_jn
+
+y_w2:
+  title: Yen Week 2
+  program_id: y_jn
+
+y_w3:
+  title: Yen Week 3
+  program_id: y_jn
+
+y_w4:
+  title: Yen Week 4
+  program_id: y_jn
+
+y_w5:
+  title: Yen Week 5
+  program_id: y_jn
+
+yg_1:
+  title: Yen GA Week 1
+  program_id: y_ga
+
+yg_2:
+  title: Yen GA Week 2
+  program_id: y_ga
+
+yg_3:
+  title: Yen GA Week 3
+  program_id: y_ga
+
+yg_4:
+  title: Yen GA Week 4
+  program_id: y_ga
+
+yg_5:
+  title: Yen GA Week 5
+  program_id: y_ga
+
