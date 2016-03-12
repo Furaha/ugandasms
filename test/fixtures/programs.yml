@@ -26,6 +26,9 @@ y_ga:
   name: Yen-Teacher-GA
   region: yen
 
+s_jn:
+  name: Sabrina's program
+
 diet:
   name: Diet
   region: nepal
