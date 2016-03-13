@@ -44,6 +44,29 @@
   </fieldset>
 
   <!-- recipients -->
+  <fieldset>
+    <legend>Recipients</legend>
+    <div id="recipients">
+      <%= f.fields_for :recipients do |r| %>
+        <div class="form-group <%= "has-error" if @program.errors.any? %>">
+          <%= r.label :recipient, class: "col-sm-2 control-label" %>
+          <div class="col-sm-4">
+            <%= r.text_field :name, class: "form-control" %>
+          </div>
+          <%= r.label :Number, class: "col-sm-2 control-label" %>
+          <div class="col-sm-2">
+            <%= r.text_field :number, class: "form-control" %>
+          </div>
+          <div class="col-sm-2">
+            <%= r.check_box :_destroy %>
+            <%= r.label :_destroy, "Delete" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <p><%= submit_tag "Add Recipient", :type=> "button", :id => "addRecipient", class: "btn btn-primary", :onclick => 'addRecipientField()' %></p>
+</fieldset>
 
   <!-- Submit -->
   <p>

@@ -74,6 +74,8 @@ class ProgramsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def program_params
-    params.require(:program).permit(:name, :region_id, messages_attributes: [:id, :title, :_destroy])
+    params.require(:program).permit(:name, :region_id, 
+                                    messages_attributes: [:id, :title, :_destroy],
+                                    recipients_attributes: [:id, :name, :number, :_destroy])
   end
 end
