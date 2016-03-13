@@ -14,8 +14,7 @@ class ProgramsController < ApplicationController
 
   # GET /programs/new
   def new
-    @program = Program.new(:region_id => params[:region])
-    3.times { @program.messages.build }
+    prime_program
   end
 
   # GET /programs/1/edit
@@ -41,9 +40,6 @@ class ProgramsController < ApplicationController
   # PATCH/PUT /programs/1
   # PATCH/PUT /programs/1.json
   def update
-    puts "####"
-    puts params["messages_text"]
-    puts "####"
 
     respond_to do |format|
       if @program.update(program_params)
@@ -77,5 +73,11 @@ class ProgramsController < ApplicationController
     params.require(:program).permit(:name, :region_id, 
                                     messages_attributes: [:id, :title, :_destroy],
                                     recipients_attributes: [:id, :name, :number, :_destroy])
+  end
+
+  def prime_program
+    @program = Program.new(:region_id => params[:region])
+    5.times { @program.messages.build }
+    5.times { @program.recipients.build }
   end
 end
