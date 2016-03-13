@@ -1,12 +1,14 @@
 <p id="notice"><%= notice %></p>
 
-<h1><%= @program.name %> <small><%= link_to "Edit", edit_program_path %><small></h1>
+<h1><%= @program.name %> <small><%= link_to "Edit", edit_program_path %></small></h1>
 
 <h3>Messages</h3>
   <% @program.messages.each do |message| %>
     <p>
+    <hr />
     <%= link_to "Send Message", transmit_message_path(message), class: "btn btn-primary btn-xs" %>
     <%= message.title %>
+    <div>Note: <%= message.note %></div>
     </p>
   <% end %>
 </ul>

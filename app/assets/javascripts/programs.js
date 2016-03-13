@@ -11,8 +11,8 @@ function addMessageField() {
   idAttributTitle =  "program_messages_attributes_0_title".replace("0", mSec);
   nameAttributTitle =  "program[messages_attributes][0][title]".replace("0", mSec);
 
-  idAttributStreet =  "program_messages_attributes_0_street".replace("0", mSec);
-  nameAttributStreet =  "program[messages_attributes][0][street]".replace("0", mSec);
+  idAttributNote =  "program_messages_attributes_0_note".replace("0", mSec);
+  nameAttributNote =  "program[messages_attributes][0][note]".replace("0", mSec);
 
   //create <div> tag
   var message = document.createElement("div");
@@ -38,6 +38,28 @@ function addMessageField() {
   inputTitle.setAttribute("name", nameAttributTitle);
   inputTitle.setAttribute("class", "form-control");
   messageDiv.appendChild(inputTitle);
+  message.appendChild(messageDiv);
+
+  //create label for Note, set it's for attribute, 
+  //and append it to <div> element
+  var labelNote = document.createElement("label");
+  labelNote.setAttribute("for", idAttributNote);
+  labelNote.setAttribute("class", idAttributNote);
+  labelNote.setAttribute("class", "col-sm-2 control-label");
+  var noteLabelText = document.createTextNode("Note");
+  labelNote.appendChild(noteLabelText);
+  message.appendChild(labelNote);
+
+  //create input for Note, set it's type, id and name attribute, 
+  //and append it to <div> element
+  var messageDiv = document.createElement("div");
+  messageDiv.setAttribute("class", "col-sm-10");
+  var inputNote = document.createElement("INPUT");
+  inputNote.setAttribute("type", "text");
+  inputNote.setAttribute("id", idAttributNote);
+  inputNote.setAttribute("name", nameAttributNote);
+  inputNote.setAttribute("class", "form-control");
+  messageDiv.appendChild(inputNote);
   message.appendChild(messageDiv);
 
   //add created <div> element with its child elements 
