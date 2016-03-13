@@ -30,6 +30,8 @@
       <%= m.label :message, class: "col-sm-2 control-label" %>
       <div class="col-sm-8">
         <%= m.text_field :title, class: "form-control" %>
+        <%= m.check_box :_destroy %>
+        <%= m.label :_destroy, "Delete Message" %>
       </div>
     </div>
   <% end %>
