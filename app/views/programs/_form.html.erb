@@ -12,7 +12,7 @@
   <!-- Region -->
   <fieldset class="form-group"> 
   <legend>
-    <%= @program.region.name %>
+    Region: <%= @program.region.name %>
   </legend>
     <%= f.hidden_field :region_id %>
   </fieldset>
@@ -40,7 +40,10 @@
         </div>
       <% end %>
     </div>
-    <p><%= submit_tag "Add Message", :type=> "button", :id => "addMessage", class: "btn btn-primary", :onclick => 'addMessageField()' %></p>
+    <p class="text-right">
+    <%= submit_tag "Add Message", :type=> "button", :id => "addMessage", class: "btn btn-primary", 
+      :onclick => 'addMessageField()' %>
+    </p>
   </fieldset>
 
   <!-- recipients -->
@@ -64,12 +67,15 @@
         </div>
       <% end %>
     </div>
-    <p><%= submit_tag "Add Recipient", :type=> "button", :id => "addRecipient", class: "btn btn-primary", :onclick => 'addRecipientField()' %></p>
+    <p class="text-right">
+    <%= submit_tag "Add Recipient", :type=> "button", :id => "addRecipient", class: "btn btn-primary", 
+      :onclick => 'addRecipientField()' %>
+    </p>
   </fieldset>
 
   <!-- Submit -->
   <p>
   <hr />
-  <%= f.submit "Submit", class: "btn btn-danger form-control" %>
+  <%= f.submit "Submit", class: "btn btn-warning form-control" %>
   </p>
 <% end %>
