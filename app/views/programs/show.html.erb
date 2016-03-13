@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1><%= @program.name %></h1>
+<h1><%= @program.name %> <small><%= link_to "Edit", edit_program_path %><small></h1>
 
 <h3>Messages</h3>
   <% @program.messages.each do |message| %>
@@ -18,5 +18,5 @@
 
 <!-- 
 <%= link_to 'Edit', edit_program_path(@program) %> |
-<%= link_to 'Back', programs_path %>
+<%= link_to 'Back', program_path %>
 -->

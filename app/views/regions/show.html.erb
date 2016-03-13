@@ -1,8 +1,21 @@
 <p id="notice"><%= notice %></p>
 
-<h1><%= @region.name %></h1>
+<h1><%= @region.name %> <small><%= link_to 'Edit', edit_region_path(@region) %></small></h1>
 
-<!-- 
-<%= link_to 'Edit', edit_region_path(@region) %> |
-<%= link_to 'Back', regions_path %>
--->
+
+<% @region.programs.each do |program| %>
+  <div><%= link_to program.name, program %></div>
+  <ul class="list-inline">
+    <li> <%= program.messages.count %> messages </li>
+    <li> <%= program.recipients.count %> recipients </li>
+  </ul>
+<% end %>
+
+<div>
+  <%= link_to 'Add Program', new_program_path(region: @region.id) %>
+</div>
+
+<div>
+  <hr />
+  <%= link_to 'Back to Regions', regions_path %>
+</div>
