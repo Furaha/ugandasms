@@ -14,9 +14,8 @@ class ProgramsController < ApplicationController
 
   # GET /programs/new
   def new
-    @program = Program.new
-    @program.region_id = params[:region]
-    @messages = @program.messages
+    @program = Program.new(:region_id => params[:region])
+    3.times { @program.messages.build }
   end
 
   # GET /programs/1/edit
@@ -68,13 +67,13 @@ class ProgramsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_program
-      @program = Program.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_program
+    @program = Program.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def program_params
-      params.require(:program).permit(:name, :region_id, messages_attributes: [:id, :title, :_destroy])
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def program_params
+    params.require(:program).permit(:name, :region_id, messages_attributes: [:id, :title, :_destroy])
+  end
 end

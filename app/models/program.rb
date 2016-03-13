@@ -6,5 +6,7 @@ class Program < ActiveRecord::Base
   has_many :messages
   has_many :recipients
 
-  accepts_nested_attributes_for :messages, allow_destroy: true
+  accepts_nested_attributes_for :messages, 
+    :reject_if => lambda { |a| a[:content].blank?  }, 
+    allow_destroy: true
 end
