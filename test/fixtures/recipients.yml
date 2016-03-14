@@ -11,7 +11,6 @@ yen_y_jn:
   number: "+13528700214"
   program: "y_jn"
 
-
 yen_y_ga:
   name: "Dr. Yen Huang"
   number: "+13528700214"
@@ -26,3 +25,63 @@ cell:
   name: "Arafat C"
   number: "+16154825480"
   program: "a_jn"
+
+Jamiru:
+  name: "Jamiru Senyunja"
+  number: "+256772461197"
+  program: "u_jn"
+
+Margaret: 
+  name: "Margaret Amule"
+  number: "+256782747167"
+  program: "u_jn"
+
+Hamudan: 
+  name: "Hamudan Kirabira" 
+  number: "+256775954096"
+  program: "u_jn"
+
+Julian: 
+  name: "Julian Nantale" 
+  number: "+256782012406"
+  program: "u_jn"
+
+Teddy: 
+  name: "Teddy Kyalimpa" 
+  number: "+256751941175"
+  program: "u_jn"
+
+Mulindwa:
+  name: "M.N. Mulindwa" 
+  number: "+256772605227"
+  program: "u_jn"
+
+stanley:
+  name: "Stanley Mvuyekure" 
+  number: "+256772926858"
+  program: "u_ga"
+
+eunice:
+  name: "Eunice Namardme" 
+  number: "+256706834148"
+  program: "u_ga"
+
+doreen:
+  name: "Doreen Kwiocwiny" 
+  number: "+256771850216" 
+  program: "u_ga"
+
+alice:
+  name: "Alice Nabwire" 
+  number: "+256772417253" 
+  program: "u_ga"
+
+stephen:
+  name: "Stephen Nandala" 
+  number: "+256784362942" 
+  program: "u_ga"
+
+immaculate:
+  name: "Immaculate Namuuabo" 
+  number: "+256772683867"
+  program: "u_ga"

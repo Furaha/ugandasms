@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] add program note
 - [ ] seed db
 - [ ] delete program
 - [ ] delete region
