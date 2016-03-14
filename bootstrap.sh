@@ -4,14 +4,6 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive 
 
-USER=
-
-if [[ -z $1 ]]; then
-  USER=arafatm
-else
-  USER=$1
-fi
-
 INSTALLED="Installed:\n"
 
 msg() { echo "*" echo "*"
@@ -49,7 +41,7 @@ apt_core() {
   pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
   pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
   pkgs="$pkgs libcurl4-openssl-dev python-software-properties nodejs"
-  pkgs="$pkgs imagemagick libmagickwand-dev"
+  pkgs="$pkgs imagemagick libmagickwand-dev libgmp-dev"
 
   msg "install pkgs"
   apt "$pkgs"
@@ -115,46 +107,57 @@ install_rbenv() {
 
   rbenv=$HOME/.rbenv/bin/rbenv
 
-  LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1 | xargs`
+  #LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1 | xargs`
+  LATEST=`cat /vagrant/.ruby-version`
 
-  echo "LATEST = $LATEST"
+  msg "LATEST = $LATEST"
 
-  #LATEST='2.1.5'
+  msg  "xxx${rbenv}/version/${LATEST}xxx"
 
   # Install a ruby
-  if [[ ! -d "$rbenv/version/$LATEST" ]]; then
-    if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-      CCONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST ONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST 
-      $rbenv global  $LATEST
-      $rbenv rehash
-      echo "Installed ruby $LATEST"
-
-      $HOME/.rbenv/shims/gem install bundler
-      echo "Install gem bundler"
-    else
-      echo "ruby $LATEST already installed"
-    fi
+  if [ ! -d "$HOME/.rbenv/versions/${LATEST}/" ]; then
+    CONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST 
+    msg "Installed ruby $LATEST"
+  else
+    msg "ruby $LATEST already installed"
   fi
+
+  # Set up environment to use rbenv
+  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' > ~/.bash_profile
+  echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+  echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bash_profile
+  source ~/.bash_profile
+  msg "bash_profile"
+
+  $rbenv global $LATEST
+  $rbenv rehash
+  msg "rehashed"
 
   INSTALLED+="- rbenv"
 }
 
-install_dotfiles() {
-  msg "Installing $USER dotfiles"
-  if [[ ! -d $HOME/dotfiles ]]; then 
-    msg "installing dotfiles" 
-    git clone https://github.com/$USER/dotfiles.git $HOME/dotfiles
-    bash $HOME/dotfiles/setup.dotfiles.sh
-  else
-    msg "updating dotfiles" 
-    cd $HOME/dotfiles
-    git pull
+install_rails() {
+  echo "gem: --no-document" > $HOME/.gemrc
+  gem install bundler
+  msg "Install gem bundler"
+
+  cd /vagrant
+  bundle install --path vendor
+  bundle package
+  if [[ ! -n $(grep "vendor/ruby" .gitignore) ]]; then
+    echo 'vendor/ruby' >> .gitignore
   fi
-  INSTALLED+="- dotfiles"
+  msg "bundle install"
+
+  RAILS_ENV=production rake db:create
+  msg "rake db:create"
+
+  INSTALLED+="- rails"
 }
 
+
 congrats() {
-  echo "$INSTALLED"
+  msg "$INSTALLED"
 }
 
 apt_3rd_party
@@ -163,7 +166,7 @@ apt_core
 
 install_postgres
 install_rbenv
-install_dotfiles
+install_rails
 
 apt_clean
 
