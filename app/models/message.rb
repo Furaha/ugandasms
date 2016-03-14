@@ -3,4 +3,6 @@ class Message < ActiveRecord::Base
 
   validates :title, length: { minimum: 4 }
   validates_presence_of :title
+
+  default_scope { order('note ASC') }
 end
