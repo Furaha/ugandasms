@@ -1,3 +1,13 @@
+# TODO
+
+- [  ] vagrant deploy
+- [  ] reject if blank
+- [  ] delete phi from fixtures
+- [ ] seed db
+- [ ] delete program
+- [ ] delete region
+- [ ] change password
+
 ## Installation Instructions
 
 Inorder to get this Up and Running

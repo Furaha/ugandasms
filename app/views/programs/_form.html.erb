@@ -10,36 +10,76 @@
   <% end %>
 
   <!-- Region -->
-  <div class="form-group"> 
-    <%= f.label "Region", class: "col-sm-2 control-label" %>
-    <%= f.label @program.region.name, class: "col-sm-10 text-left" %>
+  <fieldset class="form-group"> 
+  <legend>
+    Region: <%= @program.region.name %>
+  </legend>
     <%= f.hidden_field :region_id %>
-  </div>
+  </fieldset>
 
   <!-- Program -->
   <div class="form-group <%= "has-error" if @program.errors.any? %>">
     <%= f.label :name, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= f.text_field :name, class: "form-control" %>
-    </div>
+      <%= f.text_field :name, class: "col-sm-10" %>
   </div>
 
   <!-- messages -->
-  <%= f.fields_for :messages do |m| %>
-    <div class="form-group <%= "has-error" if @program.errors.any? %>">
-      <%= m.label :message, class: "col-sm-2 control-label" %>
-      <div class="col-sm-8">
-        <%= m.text_field :title, class: "form-control" %>
-        <%= m.check_box :_destroy %>
-        <%= m.label :_destroy, "Delete Message" %>
-      </div>
+  <fieldset>
+    <legend>Messages</legend>
+    <div id="messages">
+      <%= f.fields_for :messages do |m| %>
+        <div class="form-group <%= "has-error" if @program.errors.any? %>">
+          <%= m.label :message, class: "col-sm-2 control-label" %>
+          <div class="col-sm-10">
+            <%= m.text_field :title, class: "form-control" %>
+          </div>
+          <%= m.label :note, class: "col-sm-2 control-label" %>
+          <div class="col-sm-8">
+            <%= m.text_field :note, class: "form-control" %>
+          </div>
+          <div class="col-sm-2">
+            <%= m.check_box :_destroy %>
+            <%= m.label :_destroy, "Delete" %>
+          </div>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-
-
+    <p class="text-right">
+    <%= submit_tag "Add Message", :type=> "button", :id => "addMessage", class: "btn btn-primary", 
+      :onclick => 'addMessageField()' %>
+    </p>
+  </fieldset>
 
   <!-- recipients -->
+  <fieldset>
+    <legend>Recipients</legend>
+    <div id="recipients">
+      <%= f.fields_for :recipients do |r| %>
+        <div class="form-group <%= "has-error" if @program.errors.any? %>">
+          <%= r.label :recipient, class: "col-sm-2 control-label" %>
+          <div class="col-sm-4">
+            <%= r.text_field :name, class: "form-control" %>
+          </div>
+          <%= r.label :Number, class: "col-sm-2 control-label" %>
+          <div class="col-sm-2">
+            <%= r.text_field :number, class: "form-control" %>
+          </div>
+          <div class="col-sm-2">
+            <%= r.check_box :_destroy %>
+            <%= r.label :_destroy, "Delete" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <p class="text-right">
+    <%= submit_tag "Add Recipient", :type=> "button", :id => "addRecipient", class: "btn btn-primary", 
+      :onclick => 'addRecipientField()' %>
+    </p>
+  </fieldset>
 
   <!-- Submit -->
-  <%= f.submit "Add Program", class: "btn btn-primary" %>
+  <p>
+  <hr />
+  <%= f.submit "Submit", class: "btn btn-warning form-control" %>
+  </p>
 <% end %>
