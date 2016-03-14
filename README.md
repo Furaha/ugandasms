@@ -1,5 +1,8 @@
 # TODO
 
+- [  ] vagrant deploy
+- [  ] reject if blank
+- [  ] delete phi from fixtures
 - [ ] seed db
 - [ ] delete program
 - [ ] delete region
