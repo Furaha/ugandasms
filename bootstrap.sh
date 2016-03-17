@@ -4,7 +4,7 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive 
 
-INSTALLED="Installed:\n"
+INSTALLED="Installed:"
 
 msg() { echo "*" echo "*"
   echo "*****************************************************************"
@@ -25,8 +25,7 @@ apt_3rd_party() {
 }
 
 apt_upgrade() {
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]
-  then
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
     msg "APT update"
     sudo apt-get update
     msg "APT dist-upgrade"
@@ -36,12 +35,12 @@ apt_upgrade() {
 }
 
 apt_core() {
-
-  pkgs="curl git screen tmux vim zerofree ntpdate"
+  pkgs="curl git-core screen tmux vim zerofree ntpdate"
   pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
-  pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
+  pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev libffi-dev" 
   pkgs="$pkgs libcurl4-openssl-dev python-software-properties nodejs"
-  pkgs="$pkgs imagemagick libmagickwand-dev libgmp-dev"
+  pkgs="$pkgs imagemagick libmagickwand-dev libgmp-dev libsqlite3-dev sqlite3"
+  
 
   msg "install pkgs"
   apt "$pkgs"
@@ -147,17 +146,19 @@ install_rails() {
   if [[ ! -n $(grep "vendor/ruby" .gitignore) ]]; then
     echo 'vendor/ruby' >> .gitignore
   fi
-  msg "bundle install"
+  msg "bundle installed"
 
-  RAILS_ENV=production rake db:create
-  msg "rake db:create"
+  RAILS_ENV=production bundle exec rake db:create
+  RAILS_ENV=production bundle exec rake db:schema:load
+
+  msg "rake db:created"
 
   INSTALLED+="- rails"
 }
 
 
 congrats() {
-  msg "$INSTALLED"
+  msg "congrats: $INSTALLED"
 }
 
 apt_3rd_party

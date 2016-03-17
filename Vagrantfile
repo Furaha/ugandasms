@@ -31,6 +31,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #      b. provide a ruby version here
   #      c. if not provided then ruby-install default ruby
   config.vm.provision :shell, :path => "./bootstrap.sh", 
-    :args => ['arafatm', '2.1.5' ], 
+    :args => ['arafatm'], 
     privileged: false
 end
