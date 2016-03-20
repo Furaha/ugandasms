@@ -30,5 +30,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #      a. .ruby_version (read automatically if available)
   #      b. provide a ruby version here
   #      c. if not provided then ruby-install default ruby
-  config.vm.provision :shell, :path => "./puppet/bootstrap.sh"
+
+  #config.vm.provision :shell, :path => "./puppet/bootstrap.sh"
+  config.vm.provision "shell", inline: "/opt/puppetlabs/bin/puppet apply --modulepath=/etc/puppetlabs/code/environments/production/modules /vagrant/puppet/manifests/default.pp"
+
+
 end
