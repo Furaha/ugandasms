@@ -7,41 +7,69 @@ export DEBIAN_FRONTEND=noninteractive
 INSTALLED="Installed:"
 
 VAGRANT=/vagrant
+if [ ! -d $VAGRANT ]; then
+  mkdir -p $VAGRANT/bootstrap
+  cp -r * $VAGRANT/bootstrap
+fi
+
 RELEASE=$(lsb_release --codename --short)
 
 INSTALLED="Installed:\n"
 
 msg() { 
+  echo " "
+  echo " "
+  echo "*****************************************************************"
   echo "*****************************************************************"
   echo -e "$1"
+  echo " "
+  echo " "
+}
+
+msgs() {
+  echo " "
+  echo -e "***  $1"
+  echo " "
 }
 
 apt() {
-  msg "Installing $1"
+  msgs "apt() install $1"
   apt-get install -y --force-yes $1
 }
 
-apt_upgrade() {
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
-    msg "APT update"
+apt_update() {
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ] || /usr/bin/find /etc/apt/* -cnewer /var/cache/apt/pkgcache.bin | /bin/grep . > /dev/null; then
+    msgs "apt_update()"
     apt-get update
-    msg "APT dist-upgrade"
+  else
+    msgs "apt_update() not needed"
+  fi
+}
+
+apt_upgrade() {
+  msg "apt_upgrade()"
+
+  apt_update
+
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
+    msgs "APT dist-upgrade"
     apt-get dist-upgrade -q -y --force-yes 
     INSTALLED+="- apt-upgrade"
   fi
 }
 
 apt_core() {
-  apt-get update
+  msg "apt_core()"
 
-  msg "Preparing to install packages"
+  apt_update
 
   pkgs="curl git screen tmux vim zerofree ntpdate"
   pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
   pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
-  pkgs="$pkgs libcurl4-openssl-dev python-software-properties"
+  pkgs="$pkgs libcurl4-openssl-dev software-properties-common"
   pkgs="$pkgs imagemagick libmagickwand-dev"
   pkgs="$pkgs postgresql libpq-dev postgresql-server-dev-all postgresql-contrib"
+  pkgs="$pkgs apt-transport-https ca-certificates"
 
   apt "$pkgs"
 
@@ -49,26 +77,44 @@ apt_core() {
 }
 
 apt_3rd_party() {
-  apt software-properties-common
+  msg "apt_3rd_party()"
 
   # node.js  repo
-  add-apt-repository ppa:chris-lea/node.js 
+  if [ ! -f /etc/apt/sources.list.d/chris-lea-node_js-$RELEASE.list ]; then
+    msgs "apt_3rd_party() node.js" 
+    add-apt-repository ppa:chris-lea/node.js 
+  else
+    msgs "apt_3rd_party() node.js already installed" 
+  fi
 
   # brightbox ruby
-  add-apt-repository ppa:brightbox/ruby-ng
+  if [ ! -f /etc/apt/sources.list.d/brightbox-ruby-ng-$RELEASE.list ]; then
+    msgs "apt_3rd_party() brightbox ruby" 
+    add-apt-repository ppa:brightbox/ruby-ng
+  else
+    msgs "apt_3rd_party() brightbox ruby already installed" 
+  fi
 
   # passenger
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
-  apt-get install -y apt-transport-https ca-certificates
-  echo "deb https://oss-binaries.phusionpassenger.com/apt/passenger $RELEASE main" > /etc/apt/sources.list.d/passenger.list
+  local PASSENGER="deb https://oss-binaries.phusionpassenger.com/apt/passenger $RELEASE main"
+  local PASSAPT="/etc/apt/sources.list.d/passenger.list"
+  msgs "PASSENGER $PASSENGER"
+  msgs "PASSAPT $PASSAPT"
+  if [ ! -f /etc/apt/sources.list.d/passenger.list ]; then
+    msgs "apt_3rd_party() passenger" 
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7 
+    echo "$PASSENGER" > $PASSAPT
+  else
+    msgs "apt_3rd_party() passenger already installed" 
+  fi
 
-  apt-get update
+  apt_update
 
   apt "ruby2.3 nodejs nginx-extras passenger"
 }
 
 apt_clean() {
-  msg "APT clean"
+  msg "apt_clean()"
   apt-get -y autoremove
   apt-get -y clean
   apt-get autoclean -y
@@ -77,125 +123,42 @@ apt_clean() {
 }
 
 setup_postgres() {
-  msg "postgresql"
+  msg "setup_postgresql()"
 
   # install pgcrypto module
   #if [[ ! $(sudo -u postgres psql template1 -c '\dx') =~ pgcrypto ]]; then
   #  sudo -u postgres psql template1 -c 'create extension pgcrypto'
   #fi
 
-  # Add rails user with superuser
-  msg "Check if rails user allready exists"
-  if [[ ! $(sudo -u postgres psql template1 -c '\du') =~ rails ]]; then
-    msg "Add rails superuser"
-    sudo -u postgres psql template1 -c \
-      "create user rails with superuser password 'railspass'"
+  local PVER=$(psql -V | grep -Eo "[[:digit:]].[[:digit:]]")
+  if diff -q $VAGRANT/bootstrap/pg_hba.conf /etc/postgresql/$PVER/main/pg_hba.conf > /dev/null; then
+    msgs "pg_hba.conf up to date"
+  else
+    msgs "pg_hba.conf needs updating"
+    cat $VAGRANT/bootstrap/pg_hba.conf > /etc/postgresql/$PVER/main/pg_hba.conf
+    msgs "restart postgresql"
+    /etc/init.d/postgresql restart
   fi
-  if [[ -d /etc/postgresql/9.1 ]]; then 
-    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-      > /etc/postgresql/9.1/main/pg_hba.conf" 
-  fi
-  if [[ -d /etc/postgresql/9.3 ]]; then 
-    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-      > /etc/postgresql/9.3/main/pg_hba.conf" 
-  fi
-  msg "restart postgresql"
-  /etc/init.d/postgresql restart
 
   INSTALLED+="- postgres"
 }
 
-install_rbenv() {
-  if [ ! -d $HOME/.rbenv ]; then
-    msg "installing rbenv"
-    git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
-
-    msg "rbenv: ruby-build"
-    git clone git://github.com/sstephenson/ruby-build.git \
-      $HOME/.rbenv/plugins/ruby-build
-
-    msg "rbenv: rbenv-gem-rehash"
-    git clone https://github.com/sstephenson/rbenv-gem-rehash.git \
-      $HOME/.rbenv/plugins/rbenv-gem-rehash
-  else
-    msg "updating ruby version"
-  fi
-
-  msg "latest ruby"
-
-  rbenv=$HOME/.rbenv/bin/rbenv
-
-  #LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1 | xargs`
-  LATEST=`cat /vagrant/.ruby-version`
-
-  msg "LATEST = $LATEST"
-
-  msg  "xxx${rbenv}/version/${LATEST}xxx"
-
-  # Install a ruby
-  if [[ ! -d "$rbenv/version/$LATEST" ]]; then
-    if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-      CONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST
-      $rbenv global  $LATEST
-      $rbenv rehash
-      echo "Installed ruby $LATEST"
-
-      $HOME/.rbenv/shims/gem install bundler
-      echo "Install gem bundler"
-    else
-      echo "ruby $LATEST already installed"
-    fi
-  fi
-
-  # Set up environment to use rbenv
-  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' > ~/.bash_profile
-  echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
-  echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bash_profile
-  source ~/.bash_profile
-  msg "bash_profile"
-
-  $rbenv global $LATEST
-  $rbenv rehash
-  msg "rehashed"
-
-  INSTALLED+="- rbenv"
-}
-
-install_rails() { echo "gem: --no-document" > $HOME/.gemrc
-  gem install bundler
-  msg "Install gem bundler"
-
-  cd /vagrant
-  bundle install --path vendor
-  bundle package
-  if [[ ! -n $(grep "vendor/ruby" .gitignore) ]]; then
-    echo 'vendor/ruby' >> .gitignore
-  fi
-  msg "bundle installed"
-
-  RAILS_ENV=production bundle exec rake db:create
-  RAILS_ENV=production bundle exec rake db:schema:load
-
-  msg "rake db:created"
-
-  INSTALLED+="- rails"
-}
-
-
 setup_deploy() {
+  msg "setup_deploy()"
+
   local DEPLOY="/home/deploy/.ssh"
 
-  msg "create user deploy"
+  msgs "create user deploy"
   id -u deploy &>/dev/null || useradd deploy 
-  msg "add user deploy to sudoers"
+  msgs "add user deploy to sudoers"
   adduser deploy sudo
 
-  msg "deploy .ssh"
+  msgs "deploy .ssh"
   if [[ ! -d $DEPLOY ]]; then
     mkdir -p /home/deploy/.ssh
   fi
 
-  msg "deploy keys"
+  msgs "deploy keys"
   if [[ -d "$VAGRANT" ]]; then
     cp $VAGRANT/id_rsa $DEPLOY
     cp $VAGRANT/id_rsa.pub $DEPLOY
@@ -215,18 +178,19 @@ setup_nginx() {
 }
 
 sleep5() {
-  sleep 5
+  sleep 0
 }
 
 congrats() {
   echo "$INSTALLED"
 }
 
-sleep5 && apt_core && \
 sleep5 && apt_upgrade && \
+sleep5 && apt_core && \
 sleep5 && apt_3rd_party && \
 sleep5 && apt_clean && \
 sleep5 && setup_postgres && \
 sleep5 && setup_deploy && \
 sleep5 && setup_nginx && \
 sleep5 && congrats
+
