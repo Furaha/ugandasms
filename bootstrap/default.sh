@@ -188,6 +188,11 @@ setup_deploy()
   chmod 644 $DEPLOY/id_rsa.pub
 }
 
+setup_nginx()
+{
+  msg "TODO"
+}
+
 sleep5()
 {
   sleep 5
@@ -199,8 +204,9 @@ congrats()
 
 #sleep5 && apt_core && \
 #sleep5 && apt_upgrade && \
-sleep5 && apt_3rd_party && \
+#sleep5 && apt_3rd_party && \
 #sleep5 && apt_clean && \
 #sleep5 && setup_postgres && \
 #sleep5 && setup_deploy && \
+sleep5 && setup_nginx && \
 sleep5 && congrats
