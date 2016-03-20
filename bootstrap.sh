@@ -32,9 +32,14 @@ apt_3rd_party()
   # brightbox ruby
   add-apt-repository ppa:brightbox/ruby-ng
 
+  # passenger
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+  apt-get install -y apt-transport-https ca-certificates
+  echo "deb https://oss-binaries.phusionpassenger.com/apt/passenger $RELEASE main" > /etc/apt/sources.list.d/passenger.list
+
   apt-get update
 
-  apt "ruby2.3 nodejs"
+  apt "ruby2.3 nodejs nginx-extras passenger"
 }
 
 apt_upgrade()
@@ -194,7 +199,7 @@ congrats()
 
 #sleep5 && apt_core && \
 #sleep5 && apt_upgrade && \
-#sleep5 && apt_3rd_party && \
+sleep5 && apt_3rd_party && \
 #sleep5 && apt_clean && \
 #sleep5 && setup_postgres && \
 #sleep5 && setup_deploy && \

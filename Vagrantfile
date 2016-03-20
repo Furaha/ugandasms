@@ -30,8 +30,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #      a. .ruby_version (read automatically if available)
   #      b. provide a ruby version here
   #      c. if not provided then ruby-install default ruby
-  config.vm.provision :shell, inline: "rm -rf /home/deploy.ssh"
   config.vm.provision :shell, path: "./bootstrap.sh"
-  config.vm.provision :shell, inline: "ls -alh /home/deploy"
-  config.vm.provision :shell, inline: "ls -alh /home/deploy/.ssh"
 end
