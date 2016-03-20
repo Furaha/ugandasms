@@ -32,7 +32,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #      c. if not provided then ruby-install default ruby
 
   #config.vm.provision :shell, :path => "./puppet/bootstrap.sh"
+
   config.vm.provision "shell", inline: "/opt/puppetlabs/bin/puppet apply --modulepath=/etc/puppetlabs/code/environments/production/modules /vagrant/puppet/manifests/default.pp"
+
+  config.vm.provision :shell, inline: "echo \"Installed $(ruby -v)\""
+  config.vm.provision :shell, inline: "echo \"User deploy: $(id -u deploy)\""
 
 
 end

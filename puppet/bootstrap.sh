@@ -3,7 +3,7 @@
 set -e
 
 install_puppet() {
-  apt-get install --yes lsb-release
+  #apt-get install --yes lsb-release
   DISTRIB_CODENAME=$(lsb_release --codename --short)
   DEB="puppetlabs-release-pc1-${DISTRIB_CODENAME}.deb"
   DEB_PROVIDES="/etc/apt/sources.list.d/puppetlabs.list" # Assume that this file's existence means we have the Puppet Labs repo added
@@ -25,4 +25,6 @@ install_puppet() {
   puppet module install puppetlabs-apt
 }
 
+echo "*** installing puppet"
 install_puppet
+echo "*** installed puppet"
