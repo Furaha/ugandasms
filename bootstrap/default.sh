@@ -4,30 +4,51 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive 
 
-<<<<<<< HEAD:bootstrap.sh
 INSTALLED="Installed:"
-=======
+
 VAGRANT=/vagrant
 RELEASE=$(lsb_release --codename --short)
 
 INSTALLED="Installed:\n"
->>>>>>> master:bootstrap/default.sh
 
-msg() 
-{ 
+msg() { 
   echo "*****************************************************************"
   echo -e "$1"
 }
 
-apt()
-{
+apt() {
   msg "Installing $1"
   apt-get install -y --force-yes $1
 }
 
-apt_3rd_party()
-{
+apt_upgrade() {
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
+    msg "APT update"
+    apt-get update
+    msg "APT dist-upgrade"
+    apt-get dist-upgrade -q -y --force-yes 
+    INSTALLED+="- apt-upgrade"
+  fi
+}
 
+apt_core() {
+  apt-get update
+
+  msg "Preparing to install packages"
+
+  pkgs="curl git screen tmux vim zerofree ntpdate"
+  pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
+  pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
+  pkgs="$pkgs libcurl4-openssl-dev python-software-properties"
+  pkgs="$pkgs imagemagick libmagickwand-dev"
+  pkgs="$pkgs postgresql libpq-dev postgresql-server-dev-all postgresql-contrib"
+
+  apt "$pkgs"
+
+  ntpdate -u pool.ntp.org
+}
+
+apt_3rd_party() {
   apt software-properties-common
 
   # node.js  repo
@@ -46,54 +67,7 @@ apt_3rd_party()
   apt "ruby2.3 nodejs nginx-extras passenger"
 }
 
-<<<<<<< HEAD:bootstrap.sh
-apt_upgrade() {
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
-=======
-apt_upgrade()
-{
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]
-  then
->>>>>>> master:bootstrap/default.sh
-    msg "APT update"
-    apt-get update
-    msg "APT dist-upgrade"
-    apt-get dist-upgrade -q -y --force-yes 
-    INSTALLED+="- apt-upgrade"
-  fi
-}
-
-<<<<<<< HEAD:bootstrap.sh
-apt_core() {
-  pkgs="curl git-core screen tmux vim zerofree ntpdate"
-  pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
-  pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev libffi-dev" 
-  pkgs="$pkgs libcurl4-openssl-dev python-software-properties nodejs"
-  pkgs="$pkgs imagemagick libmagickwand-dev libgmp-dev libsqlite3-dev sqlite3"
-  
-=======
-apt_core()
-{
-
-  apt-get update
-
-  msg "Preparing to install packages"
-
-  pkgs="curl git screen tmux vim zerofree ntpdate"
-  pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
-  pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
-  pkgs="$pkgs libcurl4-openssl-dev python-software-properties"
-  pkgs="$pkgs imagemagick libmagickwand-dev"
-  pkgs="$pkgs postgresql libpq-dev postgresql-server-dev-all postgresql-contrib"
->>>>>>> master:bootstrap/default.sh
-
-  apt "$pkgs"
-
-  ntpdate -u pool.ntp.org
-}
-
-apt_clean()
-{
+apt_clean() {
   msg "APT clean"
   apt-get -y autoremove
   apt-get -y clean
@@ -102,8 +76,7 @@ apt_clean()
   INSTALLED+="- apt-clean"
 }
 
-setup_postgres()
-{
+setup_postgres() {
   msg "postgresql"
 
   # install pgcrypto module
@@ -132,8 +105,7 @@ setup_postgres()
   INSTALLED+="- postgres"
 }
 
-install_rbenv()
-{
+install_rbenv() {
   if [ ! -d $HOME/.rbenv ]; then
     msg "installing rbenv"
     git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
@@ -161,13 +133,6 @@ install_rbenv()
   msg  "xxx${rbenv}/version/${LATEST}xxx"
 
   # Install a ruby
-<<<<<<< HEAD:bootstrap.sh
-  if [ ! -d "$HOME/.rbenv/versions/${LATEST}/" ]; then
-    CONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST 
-    msg "Installed ruby $LATEST"
-  else
-    msg "ruby $LATEST already installed"
-=======
   if [[ ! -d "$rbenv/version/$LATEST" ]]; then
     if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
       CONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST
@@ -180,7 +145,6 @@ install_rbenv()
     else
       echo "ruby $LATEST already installed"
     fi
->>>>>>> master:bootstrap/default.sh
   fi
 
   # Set up environment to use rbenv
@@ -197,9 +161,7 @@ install_rbenv()
   INSTALLED+="- rbenv"
 }
 
-<<<<<<< HEAD:bootstrap.sh
-install_rails() {
-  echo "gem: --no-document" > $HOME/.gemrc
+install_rails() { echo "gem: --no-document" > $HOME/.gemrc
   gem install bundler
   msg "Install gem bundler"
 
@@ -220,21 +182,7 @@ install_rails() {
 }
 
 
-congrats() {
-  msg "congrats: $INSTALLED"
-}
-
-apt_3rd_party
-apt_upgrade
-apt_core
-
-install_postgres
-install_rbenv
-install_rails
-=======
-setup_deploy()
-{
-
+setup_deploy() {
   local DEPLOY="/home/deploy/.ssh"
 
   msg "create user deploy"
@@ -262,26 +210,23 @@ setup_deploy()
   chmod 644 $DEPLOY/id_rsa.pub
 }
 
-setup_nginx()
-{
+setup_nginx() {
   msg "TODO"
 }
->>>>>>> master:bootstrap/default.sh
 
-sleep5()
-{
+sleep5() {
   sleep 5
 }
-congrats()
-{
+
+congrats() {
   echo "$INSTALLED"
 }
 
-#sleep5 && apt_core && \
-#sleep5 && apt_upgrade && \
-#sleep5 && apt_3rd_party && \
-#sleep5 && apt_clean && \
-#sleep5 && setup_postgres && \
-#sleep5 && setup_deploy && \
+sleep5 && apt_core && \
+sleep5 && apt_upgrade && \
+sleep5 && apt_3rd_party && \
+sleep5 && apt_clean && \
+sleep5 && setup_postgres && \
+sleep5 && setup_deploy && \
 sleep5 && setup_nginx && \
 sleep5 && congrats
