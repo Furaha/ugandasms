@@ -140,7 +140,7 @@ setup_postgres() {
     cat $VAGRANT/bootstrap/pg_hba.conf > /etc/postgresql/$PVER/main/pg_hba.conf
     msgs "restart postgresql"
     /etc/init.d/postgresql restart
-    sudo -u postgres psql -c "CREATE USER deploy;"
+    sudo -u postgres psql -c "CREATE USER deploy WITH CREATEDB;"
   fi
 
   INSTALLED+="\n- postgres"
@@ -210,7 +210,6 @@ setup_nginx() {
 
 
   local NGINX=$(sed "s/mydomain/$(hostname -f)/" $VAGRANT/bootstrap/nginx_default.conf)
-  echo -e "nginx = $NGINX"
   if ! echo "$NGINX" | diff /etc/nginx/sites-enabled/default - > /dev/null; then
     msgs "nginx default site"
     echo "$NGINX" > /etc/nginx/sites-enabled/default
@@ -226,8 +225,12 @@ deploy() {
   msgs "deploying"
 
   cd $DEPLOY/app
-  sudo -u deploy bundle install 
-  passenger-config restart-app 
+  msgs "bundle install"
+  sudo -u deploy bundle install --path vendor
+  msgs "rake db:create"
+  sudo -u deploy RAILS_ENV=production bundle exec rake db:create
+  msgs "rake db:migrate"
+  sudo -u deploy RAILS_ENV=production bundle exec rake db:migrate
   /etc/init.d/nginx restart
 }
 
@@ -242,9 +245,10 @@ setup_app() {
 
   cd $DEPLOY/app
   if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
-    git pull origin master
-    deploy
+    msgs "need to update git"
+    #git pull origin master
   fi
+  deploy
 
 }
 
