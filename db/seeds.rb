@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 if !Rails.env.production?
-  load File.dirname(__FILE__) + '/seeds/campaigns.rb'
-  load File.dirname(__FILE__) + '/seeds/questions.rb'
-  load File.dirname(__FILE__) + '/seeds/participants.rb'
+  User.new(name: "yen", password: "foobar")
+  User.new(name: "sabrina", password: "foobar")
+  
 end
