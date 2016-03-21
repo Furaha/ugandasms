@@ -54,7 +54,7 @@ apt_upgrade() {
   if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
     msgs "APT dist-upgrade"
     apt-get dist-upgrade -q -y --force-yes 
-    INSTALLED+="- apt-upgrade"
+    INSTALLED+="\n- apt-upgrade"
   fi
 }
 
@@ -119,7 +119,7 @@ apt_clean() {
   apt-get -y clean
   apt-get autoclean -y
 
-  INSTALLED+="- apt-clean"
+  INSTALLED+="\n- apt-clean"
 }
 
 setup_postgres() {
@@ -140,41 +140,88 @@ setup_postgres() {
     /etc/init.d/postgresql restart
   fi
 
-  INSTALLED+="- postgres"
+  INSTALLED+="\n- postgres"
 }
 
 setup_deploy() {
   msg "setup_deploy()"
 
-  local DEPLOY="/home/deploy/.ssh"
+  local DEPLOY="/home/deploy"
 
   msgs "create user deploy"
   id -u deploy &>/dev/null || useradd deploy 
-  msgs "add user deploy to sudoers"
-  adduser deploy sudo
 
-  msgs "deploy .ssh"
-  if [[ ! -d $DEPLOY ]]; then
-    mkdir -p /home/deploy/.ssh
+
+  if [ ! -f $DEPLOY/.ssh/id_rsa ]; then
+
+    msgs "deploy .ssh"
+    if [[ ! -d $DEPLOY/.ssh ]]; then
+      mkdir -p /home/deploy/.ssh
+    fi
+
+    if [[ -d "$VAGRANT" ]]; then
+      cp $VAGRANT/id_rsa $DEPLOY/.ssh
+      cp $VAGRANT/id_rsa.pub $DEPLOY/.ssh
+    else
+      cp ./id_rsa $DEPLOY/.ssh
+      cp ./id_rsa.pub $DEPLOY/.ssh
+    fi
+
+    if [ $(id -u) -eq $(stat -c "%u" $DEPLOY) ]; then
+      msgs "chown $DEPLOY"
+      chown -R deploy:deploy $DEPLOY 
+    fi
+
+    if [ $(id -u) -eq $(stat -c "%u" $DEPLOY/.ssh) ]; then
+      msgs "chown $DEPLOY.ssh"
+      chmod 700 $DEPLOY
+      chmod 600 $DEPLOY/id_rsa
+      chmod 644 $DEPLOY/id_rsa.pub
+    fi
   fi
 
-  msgs "deploy keys"
-  if [[ -d "$VAGRANT" ]]; then
-    cp $VAGRANT/id_rsa $DEPLOY
-    cp $VAGRANT/id_rsa.pub $DEPLOY
-  else
-    cp ./id_rsa $DEPLOY
-    cp ./id_rsa.pub $DEPLOY
+  if ! diff -q $VAGRANT/bootstrap/sudoers /etc/sudoers > /dev/null; then
+    msgs "add user to sudoers"
+    \cp -f $VAGRANT/bootstrap/sudoers /etc/sudoers
+    sudo /etc/init.d/sudo restart
   fi
 
-  chown -R deploy:deploy $DEPLOY 
-  chmod 700 $DEPLOY
-  chmod 600 $DEPLOY/id_rsa
-  chmod 644 $DEPLOY/id_rsa.pub
+
+}
+
+setup_ruby() {
+  msg "setup_ruby()"
+
+  if ! gem list bundler -i > /dev/null; then
+    msgs "installing bundler"
+    gem install bundler
+  fi
 }
 
 setup_nginx() {
-  msg "TODO"
+  msg "setup_nginx()"
+
+  if diff -q $VAGRANT/bootstrap/nginx.conf /etc/nginx/nginx.conf > /dev/null; then
+    msgs "nginx up to date"
+  else
+    msgs "nginx.conf needs updating"
+    cat $VAGRANT/bootstrap/nginx.conf > /etc/nginx/nginx.conf
+    msgs "restart nginx"
+    /etc/init.d/nginx restart
+  fi
+
+
+  local NGINX=$(sed "s/mydomain/$(hostname -f)/" $VAGRANT/bootstrap/nginx_default.conf)
+  echo -e "nginx = $NGINX"
+  if ! echo "$NGINX" | diff /etc/nginx/sites-enabled/default - > /dev/null; then
+    msgs "nginx default site"
+    echo "$NGINX" > /etc/nginx/sites-enabled/default
+    /etc/init.d/nginx restart
+  else
+    msgs "nginx default site already exists"
+  fi
+
+  INSTALLED+="\n- nginx"
 }
 
 sleep5() {
@@ -182,15 +229,20 @@ sleep5() {
 }
 
 congrats() {
-  echo "$INSTALLED"
+  msg "$INSTALLED"
 }
 
-sleep5 && apt_upgrade && \
-sleep5 && apt_core && \
-sleep5 && apt_3rd_party && \
-sleep5 && apt_clean && \
-sleep5 && setup_postgres && \
-sleep5 && setup_deploy && \
-sleep5 && setup_nginx && \
+#sleep5 && apt_upgrade && \
+#sleep5 && apt_core && \
+#sleep5 && apt_3rd_party && \
+#sleep5 && apt_clean && \
+#sleep5 && setup_postgres && \
+#sleep5 && setup_deploy && \
+sleep5 && setup_ruby && \
+#sleep5 && setup_nginx && \
 sleep5 && congrats
 
+msg "Testing"
+#cat /etc/nginx/sites-enabled/default
+#cat /etc/sudoers
+#sed "s/mydomain/${HOST}/" $VAGRANT/bootstrap/nginx_default.conf 
