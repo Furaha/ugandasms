@@ -223,6 +223,7 @@ setup_nginx() {
 
 deploy() {
   msgs "deploying"
+
   cd $DEPLOY/app
   bundle install --binstubs
   sudo /etc/init.d/nginx restart
@@ -242,7 +243,6 @@ setup_app() {
     deploy
   fi
 
-  bundle install --binstubs
 }
 
 sleep5() {
