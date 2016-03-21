@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Either use i386 or amd64 versions
   config.vm.box       = 'puppetlabs/ubuntu-14.04-64-nocm'
 
-  config.vm.hostname  = 'vm.furaha.com'
+  config.vm.hostname  = 'ugandasms.furaha.com'
   config.ssh.forward_agent = true
 
   config.vm.network "forwarded_port", guest: 80, host: 8080
@@ -31,4 +31,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #      b. provide a ruby version here
   #      c. if not provided then ruby-install default ruby
   config.vm.provision :shell, path: "./bootstrap/default.sh"
+  config.vm.provision :shell, inline: "nodejs --version"
+  config.vm.provision :shell, inline: "ruby --version"
 end

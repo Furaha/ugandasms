@@ -4,209 +4,270 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive 
 
+GIT="git@github.com:furaha/ugandasms"
+
 VAGRANT=/vagrant
+if [ ! -d $VAGRANT ]; then
+  mkdir -p $VAGRANT/bootstrap
+  cp -r * $VAGRANT/bootstrap
+fi
+
+DEPLOY="/home/deploy"
+
 RELEASE=$(lsb_release --codename --short)
 
 INSTALLED="Installed:\n"
 
-msg() 
-{ 
+msg() { 
+  echo " "
+  echo " "
+  echo "*****************************************************************"
   echo "*****************************************************************"
   echo -e "$1"
+  echo " "
+  echo " "
 }
 
-apt()
-{
-  msg "Installing $1"
+msgs() {
+  echo " "
+  echo -e "***  $1"
+  echo " "
+}
+
+apt() {
+  msgs "apt() install $1"
   apt-get install -y --force-yes $1
 }
 
-apt_3rd_party()
-{
-
-  apt software-properties-common
-
-  # node.js  repo
-  add-apt-repository ppa:chris-lea/node.js 
-
-  # brightbox ruby
-  add-apt-repository ppa:brightbox/ruby-ng
-
-  # passenger
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
-  apt-get install -y apt-transport-https ca-certificates
-  echo "deb https://oss-binaries.phusionpassenger.com/apt/passenger $RELEASE main" > /etc/apt/sources.list.d/passenger.list
-
-  apt-get update
-
-  apt "ruby2.3 nodejs nginx-extras passenger"
-}
-
-apt_upgrade()
-{
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]
-  then
-    msg "APT update"
+apt_update() {
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ] || /usr/bin/find /etc/apt/* -cnewer /var/cache/apt/pkgcache.bin | /bin/grep . > /dev/null; then
+    msgs "apt_update()"
     apt-get update
-    msg "APT dist-upgrade"
-    apt-get dist-upgrade -q -y --force-yes 
-    INSTALLED+="- apt-upgrade"
+  else
+    msgs "apt_update() not needed"
   fi
 }
 
-apt_core()
-{
+apt_upgrade() {
+  msg "apt_upgrade()"
 
-  apt-get update
+  apt_update
 
-  msg "Preparing to install packages"
+  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
+    msgs "APT dist-upgrade"
+    apt-get dist-upgrade -q -y --force-yes 
+    INSTALLED+="\n- apt-upgrade"
+  fi
+}
+
+apt_core() {
+  msg "apt_core()"
+
+  apt_update
 
   pkgs="curl git screen tmux vim zerofree ntpdate"
   pkgs="$pkgs zlib1g-dev build-essential libssl-dev libreadline-dev"
   pkgs="$pkgs libyaml-dev libxml2-dev libxslt1-dev" 
-  pkgs="$pkgs libcurl4-openssl-dev python-software-properties"
+  pkgs="$pkgs libcurl4-openssl-dev software-properties-common"
   pkgs="$pkgs imagemagick libmagickwand-dev"
   pkgs="$pkgs postgresql libpq-dev postgresql-server-dev-all postgresql-contrib"
+  pkgs="$pkgs apt-transport-https ca-certificates"
 
   apt "$pkgs"
 
   ntpdate -u pool.ntp.org
 }
 
-apt_clean()
-{
-  msg "APT clean"
+apt_3rd_party() {
+  msg "apt_3rd_party()"
+
+  # node.js  repo
+  if [ ! -f /etc/apt/sources.list.d/chris-lea-node_js-$RELEASE.list ]; then
+    msgs "apt_3rd_party() node.js" 
+    add-apt-repository ppa:chris-lea/node.js 
+  else
+    msgs "apt_3rd_party() node.js already installed" 
+  fi
+
+  # brightbox ruby
+  if [ ! -f /etc/apt/sources.list.d/brightbox-ruby-ng-$RELEASE.list ]; then
+    msgs "apt_3rd_party() brightbox ruby" 
+    add-apt-repository ppa:brightbox/ruby-ng
+  else
+    msgs "apt_3rd_party() brightbox ruby already installed" 
+  fi
+
+  # passenger
+  local PASSENGER="deb https://oss-binaries.phusionpassenger.com/apt/passenger $RELEASE main"
+  local PASSAPT="/etc/apt/sources.list.d/passenger.list"
+  msgs "PASSENGER $PASSENGER"
+  msgs "PASSAPT $PASSAPT"
+  if [ ! -f /etc/apt/sources.list.d/passenger.list ]; then
+    msgs "apt_3rd_party() passenger" 
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7 
+    echo "$PASSENGER" > $PASSAPT
+  else
+    msgs "apt_3rd_party() passenger already installed" 
+  fi
+
+  apt_update
+
+  apt "ruby2.3 ruby2.3-dev nodejs nginx-extras passenger"
+}
+
+apt_clean() {
+  msg "apt_clean()"
   apt-get -y autoremove
   apt-get -y clean
   apt-get autoclean -y
 
-  INSTALLED+="- apt-clean"
+  INSTALLED+="\n- apt-clean"
 }
 
-setup_postgres()
-{
-  msg "postgresql"
+setup_postgres() {
+  msg "setup_postgresql()"
 
   # install pgcrypto module
   #if [[ ! $(sudo -u postgres psql template1 -c '\dx') =~ pgcrypto ]]; then
   #  sudo -u postgres psql template1 -c 'create extension pgcrypto'
   #fi
 
-  # Add rails user with superuser
-  msg "Check if rails user allready exists"
-  if [[ ! $(sudo -u postgres psql template1 -c '\du') =~ rails ]]; then
-    msg "Add rails superuser"
-    sudo -u postgres psql template1 -c \
-      "create user rails with superuser password 'railspass'"
+  local PVER=$(psql -V | grep -Eo "[[:digit:]].[[:digit:]]")
+  if diff -q $VAGRANT/bootstrap/pg_hba.conf /etc/postgresql/$PVER/main/pg_hba.conf > /dev/null; then
+    msgs "pg_hba.conf up to date"
+  else
+    msgs "pg_hba.conf needs updating"
+    cat $VAGRANT/bootstrap/pg_hba.conf > /etc/postgresql/$PVER/main/pg_hba.conf
+    msgs "restart postgresql"
+    /etc/init.d/postgresql restart
+    sudo -u postgres psql -c "CREATE USER deploy;"
   fi
-  if [[ -d /etc/postgresql/9.1 ]]; then 
-    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-      > /etc/postgresql/9.1/main/pg_hba.conf" 
-  fi
-  if [[ -d /etc/postgresql/9.3 ]]; then 
-    sudo sh -c "echo \"local all postgres  peer\nlocal all all       md5\" \
-      > /etc/postgresql/9.3/main/pg_hba.conf" 
-  fi
-  msg "restart postgresql"
-  /etc/init.d/postgresql restart
 
-  INSTALLED+="- postgres"
+  INSTALLED+="\n- postgres"
 }
 
-install_rbenv()
-{
-  if [ ! -d $HOME/.rbenv ]; then
-    msg "installing rbenv"
-    git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv
+setup_deploy() {
+  msg "setup_deploy()"
 
-    msg "rbenv: ruby-build"
-    git clone git://github.com/sstephenson/ruby-build.git \
-      $HOME/.rbenv/plugins/ruby-build
+  msgs "create user deploy"
+  id -u deploy &>/dev/null || useradd deploy 
 
-    msg "rbenv: rbenv-gem-rehash"
-    git clone https://github.com/sstephenson/rbenv-gem-rehash.git \
-      $HOME/.rbenv/plugins/rbenv-gem-rehash
-  else
-    msg "updating ruby version"
-  fi
 
-  msg "latest ruby"
+  if [ ! -f $DEPLOY/.ssh/id_rsa ]; then
 
-  rbenv=$HOME/.rbenv/bin/rbenv
+    msgs "deploy .ssh"
+    if [[ ! -d $DEPLOY/.ssh ]]; then
+      mkdir -p /home/deploy/.ssh
+    fi
 
-  LATEST=`$rbenv install -l | grep '^\s*2.1.*' | grep -v dev | sort | tail -n 1 | xargs`
-
-  echo "LATEST = $LATEST"
-
-  #LATEST='2.1.5'
-
-  # Install a ruby
-  if [[ ! -d "$rbenv/version/$LATEST" ]]; then
-    if [[ ! $(ruby -v) =~ "ruby $LATEST" ]]; then 
-      CONFIGURE_OPTS="--disable-install-doc --with-readline-dir=/usr/include/readline" $rbenv install -v $LATEST
-      $rbenv global  $LATEST
-      $rbenv rehash
-      echo "Installed ruby $LATEST"
-
-      $HOME/.rbenv/shims/gem install bundler
-      echo "Install gem bundler"
+    if [[ -d "$VAGRANT" ]]; then
+      cp $VAGRANT/id_rsa $DEPLOY/.ssh
+      cp $VAGRANT/id_rsa.pub $DEPLOY/.ssh
     else
-      echo "ruby $LATEST already installed"
+      cp ./id_rsa $DEPLOY/.ssh
+      cp ./id_rsa.pub $DEPLOY/.ssh
+    fi
+
+    if [ $(id -u) -eq $(stat -c "%u" $DEPLOY) ]; then
+      msgs "chown $DEPLOY"
+      chown -R deploy:deploy $DEPLOY 
+    fi
+
+    if [ $(id -u) -eq $(stat -c "%u" $DEPLOY/.ssh) ]; then
+      msgs "chown $DEPLOY.ssh"
+      chmod 700 $DEPLOY
+      chmod 600 $DEPLOY/id_rsa
+      chmod 644 $DEPLOY/id_rsa.pub
     fi
   fi
 
-  INSTALLED+="- rbenv"
+  if ! diff -q $VAGRANT/bootstrap/sudoers /etc/sudoers > /dev/null; then
+    msgs "add user to sudoers"
+    \cp -f $VAGRANT/bootstrap/sudoers /etc/sudoers
+    sudo /etc/init.d/sudo restart
+  fi
 }
 
-setup_deploy()
-{
+setup_ruby() {
+  msg "setup_ruby()"
 
-  local DEPLOY="/home/deploy/.ssh"
-
-  msg "create user deploy"
-  id -u deploy &>/dev/null || useradd deploy 
-  msg "add user deploy to sudoers"
-  adduser deploy sudo
-
-  msg "deploy .ssh"
-  if [[ ! -d $DEPLOY ]]; then
-    mkdir -p /home/deploy/.ssh
+  if ! gem list bundler -i > /dev/null; then
+    msgs "installing bundler"
+    gem install bundler
   fi
+}
+setup_nginx() {
+  msg "setup_nginx()"
 
-  msg "deploy keys"
-  if [[ -d "$VAGRANT" ]]; then
-    cp $VAGRANT/id_rsa $DEPLOY
-    cp $VAGRANT/id_rsa.pub $DEPLOY
+  if diff -q $VAGRANT/bootstrap/nginx.conf /etc/nginx/nginx.conf > /dev/null; then
+    msgs "nginx up to date"
   else
-    cp ./id_rsa $DEPLOY
-    cp ./id_rsa.pub $DEPLOY
+    msgs "nginx.conf needs updating"
+    cat $VAGRANT/bootstrap/nginx.conf > /etc/nginx/nginx.conf
+    msgs "restart nginx"
+    /etc/init.d/nginx restart
   fi
 
-  chown -R deploy:deploy $DEPLOY 
-  chmod 700 $DEPLOY
-  chmod 600 $DEPLOY/id_rsa
-  chmod 644 $DEPLOY/id_rsa.pub
+
+  local NGINX=$(sed "s/mydomain/$(hostname -f)/" $VAGRANT/bootstrap/nginx_default.conf)
+  echo -e "nginx = $NGINX"
+  if ! echo "$NGINX" | diff /etc/nginx/sites-enabled/default - > /dev/null; then
+    msgs "nginx default site"
+    echo "$NGINX" > /etc/nginx/sites-enabled/default
+    /etc/init.d/nginx restart
+  else
+    msgs "nginx default site already exists"
+  fi
+
+  INSTALLED+="\n- nginx"
 }
 
-setup_nginx()
-{
-  msg "TODO"
+deploy() {
+  msgs "deploying"
+
+  cd $DEPLOY/app
+  sudo -u deploy bundle install 
+  passenger-config restart-app 
+  /etc/init.d/nginx restart
 }
 
-sleep5()
-{
-  sleep 5
-}
-congrats()
-{
-  echo "$INSTALLED"
+setup_app() {
+  msg "setup_app()"
+
+
+  if [ ! -d $DEPLOY/app ]; then
+    sudo -u deploy git clone "$GIT" $DEPLOY/app
+    deploy
+  fi
+
+  cd $DEPLOY/app
+  if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
+    git pull origin master
+    deploy
+  fi
+
 }
 
-#sleep5 && apt_core && \
+sleep5() {
+  sleep 0
+}
+
+congrats() {
+  msg "$INSTALLED"
+}
+
 #sleep5 && apt_upgrade && \
+#sleep5 && apt_core && \
 #sleep5 && apt_3rd_party && \
 #sleep5 && apt_clean && \
-#sleep5 && setup_postgres && \
+sleep5 && setup_postgres && \
 #sleep5 && setup_deploy && \
+#sleep5 && setup_ruby && \
 sleep5 && setup_nginx && \
+sleep5 && setup_app && \
 sleep5 && congrats
+
+msg "Testing"
+#cat /etc/nginx/sites-enabled/default
+#cat /etc/sudoers
+#sed "s/mydomain/${HOST}/" $VAGRANT/bootstrap/nginx_default.conf 
