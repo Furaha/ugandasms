@@ -247,8 +247,8 @@ setup_app() {
   if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
     msgs "need to update git"
     #git pull origin master
+    deploy
   fi
-  deploy
 
 }
 
