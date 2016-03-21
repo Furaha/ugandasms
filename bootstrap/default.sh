@@ -4,7 +4,7 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive 
 
-$GIT="git@github.com:furaha/ugandasms"
+GIT="git@github.com:furaha/ugandasms"
 
 VAGRANT=/vagrant
 if [ ! -d $VAGRANT ]; then
@@ -225,8 +225,9 @@ deploy() {
   msgs "deploying"
 
   cd $DEPLOY/app
-  bundle install --binstubs
-  sudo /etc/init.d/nginx restart
+  sudo -u deploy bundle install 
+  passenger-config restart-app 
+  /etc/init.d/nginx restart
 }
 
 setup_app() {
@@ -234,12 +235,12 @@ setup_app() {
 
 
   if [ ! -d $DEPLOY/app ]; then
-    sudo -u deploy git clone $GIT $DEPLOY/app
+    sudo -u deploy git clone "$GIT" $DEPLOY/app
     deploy
   fi
 
   cd $DEPLOY/app
-  if [ ! $(git rev-parse @) = @(git rev-parse @{u}) ]; then
+  if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
     git pull origin master
     deploy
   fi
@@ -261,7 +262,7 @@ congrats() {
 #sleep5 && setup_postgres && \
 #sleep5 && setup_deploy && \
 #sleep5 && setup_ruby && \
-#sleep5 && setup_nginx && \
+sleep5 && setup_nginx && \
 sleep5 && setup_app && \
 sleep5 && congrats
 
