@@ -4,13 +4,15 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive 
 
-INSTALLED="Installed:"
+$GIT="git@github.com:furaha/ugandasms"
 
 VAGRANT=/vagrant
 if [ ! -d $VAGRANT ]; then
   mkdir -p $VAGRANT/bootstrap
   cp -r * $VAGRANT/bootstrap
 fi
+
+DEPLOY="/home/deploy"
 
 RELEASE=$(lsb_release --codename --short)
 
@@ -110,7 +112,7 @@ apt_3rd_party() {
 
   apt_update
 
-  apt "ruby2.3 nodejs nginx-extras passenger"
+  apt "ruby2.3 ruby2.3-dev nodejs nginx-extras passenger"
 }
 
 apt_clean() {
@@ -145,8 +147,6 @@ setup_postgres() {
 
 setup_deploy() {
   msg "setup_deploy()"
-
-  local DEPLOY="/home/deploy"
 
   msgs "create user deploy"
   id -u deploy &>/dev/null || useradd deploy 
@@ -185,8 +185,6 @@ setup_deploy() {
     \cp -f $VAGRANT/bootstrap/sudoers /etc/sudoers
     sudo /etc/init.d/sudo restart
   fi
-
-
 }
 
 setup_ruby() {
@@ -197,7 +195,6 @@ setup_ruby() {
     gem install bundler
   fi
 }
-
 setup_nginx() {
   msg "setup_nginx()"
 
@@ -224,6 +221,30 @@ setup_nginx() {
   INSTALLED+="\n- nginx"
 }
 
+deploy() {
+  msgs "deploying"
+  cd $DEPLOY/app
+  bundle install --binstubs
+  sudo /etc/init.d/nginx restart
+}
+
+setup_app() {
+  msg "setup_app()"
+
+
+  if [ ! -d $DEPLOY/app ]; then
+    sudo -u deploy git clone $GIT $DEPLOY/app
+    deploy
+  fi
+
+  if [ ! $(git rev-parse @) = @(git rev-parse @{u}) ]; then
+    git pull origin master
+    deploy
+  fi
+
+  bundle install --binstubs
+}
+
 sleep5() {
   sleep 0
 }
@@ -238,8 +259,9 @@ congrats() {
 #sleep5 && apt_clean && \
 #sleep5 && setup_postgres && \
 #sleep5 && setup_deploy && \
-sleep5 && setup_ruby && \
+#sleep5 && setup_ruby && \
 #sleep5 && setup_nginx && \
+sleep5 && setup_app && \
 sleep5 && congrats
 
 msg "Testing"
