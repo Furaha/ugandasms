@@ -232,6 +232,7 @@ update_app() {
   deploy "RAILS_ENV=production bundle exec rake db:migrate"
   deploy "RAILS_ENV=production bundle exec rake db:seed"
   deploy "RAILS_ENV=production bundle exec rake assets:precompile"
+  cp -f $VAGRANT/bootstrap/local_env.yml $DEPLOY/app/config/
   /etc/init.d/nginx restart
 }
 

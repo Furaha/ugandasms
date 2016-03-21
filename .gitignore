@@ -26,7 +26,7 @@ doc/
 *~
 
 #ignore the variables
-config/local_env.yml
+local_env.yml
 
 # Ignore Spring files.
 /spring/*.pid
