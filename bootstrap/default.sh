@@ -222,15 +222,18 @@ setup_nginx() {
 }
 
 deploy() {
-  msgs "deploying"
+  msgs "deploying $1"
+
+  sudo -u deploy $1
+}
+
+update_app() {
+  msg "update_app()"
 
   cd $DEPLOY/app
-  msgs "bundle install"
-  sudo -u deploy bundle install --path vendor
-  msgs "rake db:create"
-  sudo -u deploy RAILS_ENV=production bundle exec rake db:create
-  msgs "rake db:migrate"
-  sudo -u deploy RAILS_ENV=production bundle exec rake db:migrate
+  deploy "bundle install --path vendor"
+  deploy "RAILS_ENV=production bundle exec rake db:create"
+  deploy "RAILS_ENV=production bundle exec rake db:migrate"
   /etc/init.d/nginx restart
 }
 
@@ -239,15 +242,16 @@ setup_app() {
 
 
   if [ ! -d $DEPLOY/app ]; then
-    sudo -u deploy git clone "$GIT" $DEPLOY/app
-    deploy
+    deploy "git clone \"$GIT\" $DEPLOY/app"
+    setup_app
   fi
 
   cd $DEPLOY/app
+  git fetch
   if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
     msgs "need to update git"
-    #git pull origin master
-    deploy
+    deploy "git pull origin master"
+    setup_app
   fi
 
 }
@@ -260,18 +264,13 @@ congrats() {
   msg "$INSTALLED"
 }
 
-#sleep5 && apt_upgrade && \
-#sleep5 && apt_core && \
-#sleep5 && apt_3rd_party && \
-#sleep5 && apt_clean && \
+sleep5 && apt_upgrade && \
+sleep5 && apt_core && \
+sleep5 && apt_3rd_party && \
+sleep5 && apt_clean && \
 sleep5 && setup_postgres && \
-#sleep5 && setup_deploy && \
-#sleep5 && setup_ruby && \
+sleep5 && setup_deploy && \
+sleep5 && setup_ruby && \
 sleep5 && setup_nginx && \
 sleep5 && setup_app && \
 sleep5 && congrats
-
-msg "Testing"
-#cat /etc/nginx/sites-enabled/default
-#cat /etc/sudoers
-#sed "s/mydomain/${HOST}/" $VAGRANT/bootstrap/nginx_default.conf 
