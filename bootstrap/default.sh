@@ -140,6 +140,7 @@ setup_postgres() {
     cat $VAGRANT/bootstrap/pg_hba.conf > /etc/postgresql/$PVER/main/pg_hba.conf
     msgs "restart postgresql"
     /etc/init.d/postgresql restart
+    sudo -u postgres psql -c "CREATE USER deploy;"
   fi
 
   INSTALLED+="\n- postgres"
@@ -259,7 +260,7 @@ congrats() {
 #sleep5 && apt_core && \
 #sleep5 && apt_3rd_party && \
 #sleep5 && apt_clean && \
-#sleep5 && setup_postgres && \
+sleep5 && setup_postgres && \
 #sleep5 && setup_deploy && \
 #sleep5 && setup_ruby && \
 sleep5 && setup_nginx && \
