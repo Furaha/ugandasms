@@ -156,29 +156,25 @@ setup_deploy() {
   if [ ! -f $DEPLOY/.ssh/id_rsa ]; then
 
     msgs "deploy .ssh"
-    if [[ ! -d $DEPLOY/.ssh ]]; then
-      mkdir -p /home/deploy/.ssh
-    fi
+    mkdir -p /home/deploy/.ssh
 
     if [[ -d "$VAGRANT" ]]; then
-      cp $VAGRANT/id_rsa $DEPLOY/.ssh
-      cp $VAGRANT/id_rsa.pub $DEPLOY/.ssh
+      cp $VAGRANT/bootstrap/id_rsa $DEPLOY/.ssh
+      cp $VAGRANT/bootstrap/id_rsa.pub $DEPLOY/.ssh
     else
       cp ./id_rsa $DEPLOY/.ssh
       cp ./id_rsa.pub $DEPLOY/.ssh
     fi
+    ssh-keyscan -H github.com > $DEPLOY/.ssh/known_hosts
 
-    if [ $(id -u) -eq $(stat -c "%u" $DEPLOY) ]; then
-      msgs "chown $DEPLOY"
-      chown -R deploy:deploy $DEPLOY 
-    fi
+    chown -R deploy:deploy $DEPLOY 
 
-    if [ $(id -u) -eq $(stat -c "%u" $DEPLOY/.ssh) ]; then
-      msgs "chown $DEPLOY.ssh"
-      chmod 700 $DEPLOY
-      chmod 600 $DEPLOY/id_rsa
-      chmod 644 $DEPLOY/id_rsa.pub
-    fi
+    msgs "chown $DEPLOY/.ssh"
+    chmod 700 $DEPLOY/.ssh
+    chmod 600 $DEPLOY/.ssh/id_rsa
+    chmod 644 $DEPLOY/.ssh/id_rsa.pub
+    chmod 600 $DEPLOY/.ssh/known_hosts
+
   fi
 
   if ! diff -q $VAGRANT/bootstrap/sudoers /etc/sudoers > /dev/null; then
@@ -234,24 +230,29 @@ update_app() {
   deploy "bundle install --path vendor"
   deploy "RAILS_ENV=production bundle exec rake db:create"
   deploy "RAILS_ENV=production bundle exec rake db:migrate"
+  deploy "RAILS_ENV=production bundle exec rake db:seed"
   /etc/init.d/nginx restart
 }
 
 setup_app() {
   msg "setup_app()"
 
-
   if [ ! -d $DEPLOY/app ]; then
-    deploy "git clone \"$GIT\" $DEPLOY/app"
-    setup_app
+    msgs "$DEPLOY/app not found"
+    deploy "git clone $GIT $DEPLOY/app"
+    update_app
+  else
+    msgs "$DEPLOY/app already exists"
   fi
 
   cd $DEPLOY/app
-  git fetch
+  deploy "git fetch"
   if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
     msgs "need to update git"
     deploy "git pull origin master"
-    setup_app
+    update_app
+  else
+    msgs "git up to date"
   fi
 
 }
