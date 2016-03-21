@@ -68,7 +68,6 @@ test:
 #
 production:
   <<: *default
-  database: ugandasms_production
-  username: rails
-  password: railspass
+  database: ugandasms
+  username: deploy
   #password: <%= ENV['UGANDASMS_DATABASE_PASSWORD'] %>
