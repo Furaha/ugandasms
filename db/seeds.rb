@@ -6,7 +6,6 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 if !Rails.env.production?
-  User.new(name: "yen", password: "foobar")
-  User.new(name: "sabrina", password: "foobar")
-  
+  User.create(name: "yen", password: "foobar")
+  User.create(name: "sabrina", password: "foobar")
 end
