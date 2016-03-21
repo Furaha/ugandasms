@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :users
   resources :regions
   resources :recipients
   resources :programs
@@ -11,7 +12,7 @@ Rails.application.routes.draw do
   end
 
 
-  get 'users/new'
+  #get 'users/new'
 
   get    'login' => 'sessions#new'
   post   'login' => 'sessions#create'
