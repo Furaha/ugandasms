@@ -238,6 +238,7 @@ setup_app() {
     deploy
   fi
 
+  cd $DEPLOY/app
   if [ ! $(git rev-parse @) = @(git rev-parse @{u}) ]; then
     git pull origin master
     deploy
