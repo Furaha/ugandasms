@@ -11,7 +11,7 @@
     </button>
     <%= link_to root_path do %>
       <!-- <%= image_tag "logo.png", :class => "navbar-brand", :alt => "logo", :id => 'logo' %> -->
-      <h3><%= current_user.name if logged_in? %></h3>
+      <h3><%= link_to(current_user.name, user_path(current_user)) if logged_in? %></h3>
     <% end %>
   </div>
 
