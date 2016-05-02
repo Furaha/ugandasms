@@ -253,9 +253,7 @@ setup_app() {
     msgs "need to update git"
     deploy "git pull origin master"
     deploy "bundle install --path vendor"
-    deploy "RAILS_ENV=production bundle exec rake db:create"
-    deploy "RAILS_ENV=production bundle exec rake db:migrate"
-    deploy "RAILS_ENV=production bundle exec rake assets:precompile"
+    update_app
   else
     msgs "git up to date"
   fi
