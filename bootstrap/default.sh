@@ -268,13 +268,14 @@ congrats() {
   msg "$INSTALLED"
 }
 
-sleep5 && apt_upgrade && \
-sleep5 && apt_core && \
-sleep5 && apt_3rd_party && \
-sleep5 && setup_postgres && \
-sleep5 && setup_deploy && \
-sleep5 && setup_ruby && \
-sleep5 && setup_nginx && \
-sleep5 && setup_app && \
-sleep5 && apt_clean && \
+#sleep5 && apt_upgrade && \
+#sleep5 && apt_core && \
+#sleep5 && apt_3rd_party && \
+#sleep5 && setup_postgres && \
+#sleep5 && setup_deploy && \
+#sleep5 && setup_ruby && \
+#sleep5 && setup_nginx && \
+#sleep5 && setup_app && \
+sleep5 && update_app && \
+#sleep5 && apt_clean && \
 sleep5 && congrats
