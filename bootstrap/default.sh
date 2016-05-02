@@ -40,12 +40,12 @@ apt() {
 }
 
 apt_update() {
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ] || /usr/bin/find /etc/apt/* -cnewer /var/cache/apt/pkgcache.bin | /bin/grep . > /dev/null; then
+  #if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ] || /usr/bin/find /etc/apt/* -cnewer /var/cache/apt/pkgcache.bin | /bin/grep . > /dev/null; then
     msgs "apt_update()"
     apt-get update
-  else
-    msgs "apt_update() not needed"
-  fi
+  #else
+  #  msgs "apt_update() not needed"
+  #fi
 }
 
 apt_upgrade() {
@@ -53,11 +53,11 @@ apt_upgrade() {
 
   apt_update
 
-  if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
+  #if [ "$[$(date +%s) - $(stat -c %Z /var/cache/apt/pkgcache.bin)]" -ge 3600 ]; then
     msgs "APT dist-upgrade"
     apt-get dist-upgrade -q -y --force-yes 
     INSTALLED+="\n- apt-upgrade"
-  fi
+  #fi
 }
 
 apt_core() {
@@ -82,33 +82,33 @@ apt_3rd_party() {
   msg "apt_3rd_party()"
 
   # node.js  repo
-  if [ ! -f /etc/apt/sources.list.d/chris-lea-node_js-$RELEASE.list ]; then
+  #if [ ! -f /etc/apt/sources.list.d/chris-lea-node_js-$RELEASE.list ]; then
     msgs "apt_3rd_party() node.js" 
     add-apt-repository ppa:chris-lea/node.js 
-  else
-    msgs "apt_3rd_party() node.js already installed" 
-  fi
+  #else
+  #  msgs "apt_3rd_party() node.js already installed" 
+  #fi
 
   # brightbox ruby
-  if [ ! -f /etc/apt/sources.list.d/brightbox-ruby-ng-$RELEASE.list ]; then
+  #if [ ! -f /etc/apt/sources.list.d/brightbox-ruby-ng-$RELEASE.list ]; then
     msgs "apt_3rd_party() brightbox ruby" 
     add-apt-repository ppa:brightbox/ruby-ng
-  else
-    msgs "apt_3rd_party() brightbox ruby already installed" 
-  fi
+  #else
+  #  msgs "apt_3rd_party() brightbox ruby already installed" 
+  #fi
 
   # passenger
   local PASSENGER="deb https://oss-binaries.phusionpassenger.com/apt/passenger $RELEASE main"
   local PASSAPT="/etc/apt/sources.list.d/passenger.list"
   msgs "PASSENGER $PASSENGER"
   msgs "PASSAPT $PASSAPT"
-  if [ ! -f /etc/apt/sources.list.d/passenger.list ]; then
+  #if [ ! -f /etc/apt/sources.list.d/passenger.list ]; then
     msgs "apt_3rd_party() passenger" 
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7 
     echo "$PASSENGER" > $PASSAPT
-  else
-    msgs "apt_3rd_party() passenger already installed" 
-  fi
+  #else
+  #  msgs "apt_3rd_party() passenger already installed" 
+  #fi
 
   apt_update
 
@@ -133,15 +133,15 @@ setup_postgres() {
   #fi
 
   local PVER=$(psql -V | grep -Eo "[[:digit:]].[[:digit:]]")
-  if diff -q $VAGRANT/bootstrap/pg_hba.conf /etc/postgresql/$PVER/main/pg_hba.conf > /dev/null; then
-    msgs "pg_hba.conf up to date"
-  else
+  #if diff -q $VAGRANT/bootstrap/pg_hba.conf /etc/postgresql/$PVER/main/pg_hba.conf > /dev/null; then
+  #  msgs "pg_hba.conf up to date"
+  #else
     msgs "pg_hba.conf needs updating"
     cat $VAGRANT/bootstrap/pg_hba.conf > /etc/postgresql/$PVER/main/pg_hba.conf
     msgs "restart postgresql"
     /etc/init.d/postgresql restart
     sudo -u postgres psql -c "CREATE USER deploy WITH CREATEDB;"
-  fi
+  #fi
 
   INSTALLED+="\n- postgres"
 }
@@ -153,17 +153,17 @@ setup_deploy() {
   id -u deploy &>/dev/null || useradd -s /bin/bash -U deploy 
 
 
-  if [ ! -f $DEPLOY/.ssh/id_rsa ]; then
+  #if [ ! -f $DEPLOY/.ssh/id_rsa ]; then
 
     msgs "deploy .ssh"
     mkdir -p /home/deploy/.ssh
 
     if [[ -d "$VAGRANT" ]]; then
-      cp $VAGRANT/bootstrap/id_rsa $DEPLOY/.ssh
-      cp $VAGRANT/bootstrap/id_rsa.pub $DEPLOY/.ssh
+      cp -f $VAGRANT/bootstrap/id_rsa $DEPLOY/.ssh
+      cp -f $VAGRANT/bootstrap/id_rsa.pub $DEPLOY/.ssh
     else
-      cp ./id_rsa $DEPLOY/.ssh
-      cp ./id_rsa.pub $DEPLOY/.ssh
+      cp -f ./id_rsa $DEPLOY/.ssh
+      cp -f ./id_rsa.pub $DEPLOY/.ssh
     fi
     ssh-keyscan -H github.com > $DEPLOY/.ssh/known_hosts
 
@@ -175,44 +175,44 @@ setup_deploy() {
     chmod 644 $DEPLOY/.ssh/id_rsa.pub
     chmod 600 $DEPLOY/.ssh/known_hosts
 
-  fi
+  #fi
 
-  if ! diff -q $VAGRANT/bootstrap/sudoers /etc/sudoers > /dev/null; then
+  #if ! diff -q $VAGRANT/bootstrap/sudoers /etc/sudoers > /dev/null; then
     msgs "add user to sudoers"
     cat $VAGRANT/bootstrap/sudoers > /etc/sudoers
     sudo /etc/init.d/sudo restart
-  fi
+  #fi
 }
 
 setup_ruby() {
   msg "setup_ruby()"
 
-  if ! gem list bundler -i > /dev/null; then
+  #if ! gem list bundler -i > /dev/null; then
     msgs "installing bundler"
     gem install bundler
-  fi
+  #fi
 }
 setup_nginx() {
   msg "setup_nginx()"
 
-  if diff -q $VAGRANT/bootstrap/nginx.conf /etc/nginx/nginx.conf > /dev/null; then
-    msgs "nginx up to date"
-  else
+  #if diff -q $VAGRANT/bootstrap/nginx.conf /etc/nginx/nginx.conf > /dev/null; then
+  #  msgs "nginx up to date"
+  #else
     msgs "nginx.conf needs updating"
     cat $VAGRANT/bootstrap/nginx.conf > /etc/nginx/nginx.conf
     msgs "restart nginx"
     /etc/init.d/nginx restart
-  fi
+  #fi
 
 
   local NGINX=$(sed "s/mydomain/$(hostname -f)/" $VAGRANT/bootstrap/nginx_default.conf)
-  if ! echo "$NGINX" | diff /etc/nginx/sites-enabled/default - > /dev/null; then
+  #if ! echo "$NGINX" | diff /etc/nginx/sites-enabled/default - > /dev/null; then
     msgs "nginx default site"
     echo "$NGINX" > /etc/nginx/sites-enabled/default
     /etc/init.d/nginx restart
-  else
-    msgs "nginx default site already exists"
-  fi
+  #else
+  #  msgs "nginx default site already exists"
+  #fi
 
   INSTALLED+="\n- nginx"
 }
@@ -229,10 +229,10 @@ update_app() {
   cd $DEPLOY/app
   deploy "bundle install --path vendor"
   deploy "RAILS_ENV=production bundle exec rake db:create"
-  deploy "RAILS_ENV=production bundle exec rake db:schema:load"
+  deploy "RAILS_ENV=production bundle exec rake db:migrate"
   deploy "RAILS_ENV=production bundle exec rake db:seed"
   deploy "RAILS_ENV=production bundle exec rake assets:precompile"
-  cp -f $VAGRANT/bootstrap/local_env.yml $DEPLOY/app/config/
+  cat $VAGRANT/bootstrap/local_env.yml > $DEPLOY/app/config/
   /etc/init.d/nginx restart
 }
 
@@ -252,7 +252,10 @@ setup_app() {
   if [ $(git rev-parse @) != $(git rev-parse @{u}) ]; then
     msgs "need to update git"
     deploy "git pull origin master"
-    update_app
+    deploy "bundle install --path vendor"
+    deploy "RAILS_ENV=production bundle exec rake db:create"
+    deploy "RAILS_ENV=production bundle exec rake db:migrate"
+    deploy "RAILS_ENV=production bundle exec rake assets:precompile"
   else
     msgs "git up to date"
   fi
