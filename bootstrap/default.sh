@@ -71,7 +71,7 @@ apt_core() {
   pkgs="$pkgs libcurl4-openssl-dev software-properties-common"
   pkgs="$pkgs imagemagick libmagickwand-dev"
   pkgs="$pkgs postgresql libpq-dev postgresql-server-dev-all postgresql-contrib"
-  pkgs="$pkgs apt-transport-https ca-certificates"
+  pkgs="$pkgs apt-transport-https ca-certificates python-software-properties"
 
   apt "$pkgs"
 
@@ -150,7 +150,7 @@ setup_deploy() {
   msg "setup_deploy()"
 
   msgs "create user deploy"
-  id -u deploy &>/dev/null || useradd deploy 
+  id -u deploy &>/dev/null || useradd -s /bin/bash -U deploy 
 
 
   if [ ! -f $DEPLOY/.ssh/id_rsa ]; then
@@ -179,7 +179,7 @@ setup_deploy() {
 
   if ! diff -q $VAGRANT/bootstrap/sudoers /etc/sudoers > /dev/null; then
     msgs "add user to sudoers"
-    \cp -f $VAGRANT/bootstrap/sudoers /etc/sudoers
+    cat $VAGRANT/bootstrap/sudoers > /etc/sudoers
     sudo /etc/init.d/sudo restart
   fi
 }
@@ -220,7 +220,7 @@ setup_nginx() {
 deploy() {
   msgs "deploying $1"
 
-  sudo -u deploy $1
+  sudo -H -u deploy $1
 }
 
 update_app() {
@@ -229,7 +229,7 @@ update_app() {
   cd $DEPLOY/app
   deploy "bundle install --path vendor"
   deploy "RAILS_ENV=production bundle exec rake db:create"
-  deploy "RAILS_ENV=production bundle exec rake db:migrate"
+  deploy "RAILS_ENV=production bundle exec rake db:schema:load"
   deploy "RAILS_ENV=production bundle exec rake db:seed"
   deploy "RAILS_ENV=production bundle exec rake assets:precompile"
   cp -f $VAGRANT/bootstrap/local_env.yml $DEPLOY/app/config/
@@ -270,10 +270,10 @@ congrats() {
 sleep5 && apt_upgrade && \
 sleep5 && apt_core && \
 sleep5 && apt_3rd_party && \
-sleep5 && apt_clean && \
 sleep5 && setup_postgres && \
 sleep5 && setup_deploy && \
 sleep5 && setup_ruby && \
 sleep5 && setup_nginx && \
 sleep5 && setup_app && \
+sleep5 && apt_clean && \
 sleep5 && congrats
